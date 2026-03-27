@@ -4,2320 +4,1231 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matrix Chain Multiplication</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-1: #07111f;
-      --bg-2: #0b1630;
-      --bg-3: #101f44;
-      --panel: rgba(12, 20, 42, 0.82);
-      --panel-strong: rgba(8, 15, 32, 0.92);
-      --panel-soft: rgba(21, 32, 66, 0.78);
-      --border: rgba(148, 163, 184, 0.18);
-      --border-strong: rgba(110, 231, 255, 0.18);
-      --text: #eef7ff;
-      --muted: #a9bdd8;
-      --soft: #89a2c7;
-      --accent: #6ee7ff;
-      --accent-2: #a78bfa;
-      --accent-3: #f59e0b;
-      --accent-4: #22c55e;
-      --base: rgba(34, 197, 94, 0.24);
-      --active: rgba(110, 231, 255, 0.28);
-      --candidate: rgba(245, 158, 11, 0.28);
-      --dependency: rgba(96, 165, 250, 0.24);
-      --finalized: rgba(167, 139, 250, 0.30);
-      --shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
-      --radius: 20px;
-      --danger-soft: rgba(239, 68, 68, 0.14);
-      --success-soft: rgba(34, 197, 94, 0.14);
-      --warn-soft: rgba(245, 158, 11, 0.14);
-    }
+      --bg: #0e1117;
+      --surface: #161b27;
+      --surface2: #1e2435;
+      --border: rgba(255,255,255,0.07);
+      --border-accent: rgba(99,179,237,0.3);
+      --text: #e8edf5;
+      --muted: #7a8fa6;
+      --soft: #4a6380;
+      --accent: #63b3ed;
+      --accent2: #b794f4;
+      --accent3: #f6ad55;
+      --accent4: #68d391;
+      --danger: #fc8181;
 
-    body.theme-sunset {
-      --bg-1: #1b1020;
-      --bg-2: #231433;
-      --bg-3: #33204a;
-      --panel: rgba(32, 17, 45, 0.82);
-      --panel-strong: rgba(22, 10, 34, 0.93);
-      --panel-soft: rgba(48, 24, 65, 0.80);
-      --border: rgba(251, 191, 36, 0.18);
-      --border-strong: rgba(244, 114, 182, 0.22);
-      --text: #fff6fb;
-      --muted: #e8cde0;
-      --soft: #d8a9cf;
-      --accent: #f472b6;
-      --accent-2: #f59e0b;
-      --accent-3: #fb7185;
-      --accent-4: #34d399;
-      --base: rgba(34, 197, 94, 0.20);
-      --active: rgba(244, 114, 182, 0.28);
-      --candidate: rgba(245, 158, 11, 0.25);
-      --dependency: rgba(251, 113, 133, 0.18);
-      --finalized: rgba(168, 85, 247, 0.26);
-      --danger-soft: rgba(251, 113, 133, 0.16);
-      --success-soft: rgba(52, 211, 153, 0.16);
-      --warn-soft: rgba(245, 158, 11, 0.16);
+      --cell-base: rgba(104,211,145,0.18);
+      --cell-active: rgba(99,179,237,0.22);
+      --cell-candidate: rgba(246,173,85,0.22);
+      --cell-dependency: rgba(183,148,244,0.18);
+      --cell-finalized: rgba(99,179,237,0.30);
     }
-
-    body.theme-emerald {
-      --bg-1: #061914;
-      --bg-2: #0b241d;
-      --bg-3: #123328;
-      --panel: rgba(10, 32, 24, 0.84);
-      --panel-strong: rgba(7, 23, 18, 0.94);
-      --panel-soft: rgba(16, 45, 33, 0.82);
-      --border: rgba(74, 222, 128, 0.18);
-      --border-strong: rgba(45, 212, 191, 0.18);
-      --text: #f1fff7;
-      --muted: #b6dbc5;
-      --soft: #8ec1a7;
-      --accent: #34d399;
-      --accent-2: #2dd4bf;
-      --accent-3: #84cc16;
-      --accent-4: #22c55e;
-      --base: rgba(34, 197, 94, 0.20);
-      --active: rgba(45, 212, 191, 0.26);
-      --candidate: rgba(132, 204, 22, 0.20);
-      --dependency: rgba(52, 211, 153, 0.18);
-      --finalized: rgba(16, 185, 129, 0.25);
-      --danger-soft: rgba(248, 113, 113, 0.14);
-      --success-soft: rgba(52, 211, 153, 0.14);
-      --warn-soft: rgba(163, 230, 53, 0.14);
-    }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      padding: 24px;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(110, 231, 255, 0.12), transparent 22%),
-        radial-gradient(circle at 85% 12%, rgba(167, 139, 250, 0.12), transparent 24%),
-        radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.08), transparent 28%),
-        linear-gradient(180deg, var(--bg-3), var(--bg-2) 35%, var(--bg-1));
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
-    .page-shell {
-      max-width: 1560px;
-      margin: 0 auto;
-    }
+    /* ── layout ── */
+    .shell { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
 
-    .hero {
-      text-align: center;
-      margin-bottom: 26px;
-      position: relative;
-    }
-
-    .hero::after {
-      content: "";
-      display: block;
-      width: 240px;
-      height: 3px;
-      margin: 18px auto 0;
-      border-radius: 999px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent-3), transparent);
-      box-shadow: 0 0 25px rgba(110, 231, 255, 0.24);
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: 54px;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      margin-top: 10px;
-      font-size: 16px;
-    }
-
-    .top-toolbar {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 18px;
+    .page-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      gap: 16px;
       flex-wrap: wrap;
     }
 
-    .card {
-      background: linear-gradient(180deg, var(--panel), var(--panel-strong));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      position: relative;
-    }
+    .page-title h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.03em; }
+    .page-title p { color: var(--muted); font-size: 13px; margin-top: 3px; }
 
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0.35;
-      border-top-left-radius: var(--radius);
-      border-top-right-radius: var(--radius);
-    }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .lecture-notes {
-      margin-bottom: 24px;
-    }
-
-    .lecture-notes h2,
-    .control-panel h2,
-    .visual-column h2,
-    .chart-section h2,
-    .analysis-column h2 {
-      margin-top: 0;
-      font-size: 20px;
-    }
-
-    .notes-grid {
+    .main-layout {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .notes-grid > div {
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.02);
-    }
-
-    .notes-grid h3 {
-      margin-bottom: 8px;
-      margin-top: 0;
-    }
-
-    .notes-grid p,
-    .notes-grid li {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .notes-grid ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    .tool-layout {
-      display: grid;
-      grid-template-columns: 430px minmax(0, 1fr);
-      gap: 24px;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
       align-items: start;
     }
 
-    .control-panel {
-      position: sticky;
-      top: 16px;
+    /* ── sidebar ── */
+    .sidebar {
+      position: sticky; top: 20px;
+      display: flex; flex-direction: column; gap: 16px;
     }
 
-    .visual-column {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      min-width: 0;
-    }
-
-    .label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    #dimsInput,
-    #searchModeSelect {
-      width: 100%;
-      padding: 14px 15px;
-      border-radius: 14px;
+    /* ── panels ── */
+    .panel {
+      background: var(--surface);
       border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .panel-title {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── inputs ── */
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
       color: var(--text);
-      font-size: 15px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
       outline: none;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      transition: border-color 0.15s;
     }
+    input[type="text"]:focus, select:focus { border-color: var(--accent); }
+    select { cursor: pointer; }
+    select option { background: #1e2435; }
 
-    #dimsInput:focus,
-    #searchModeSelect:focus {
-      border-color: rgba(110, 231, 255, 0.55);
-      box-shadow: 0 0 0 4px rgba(110, 231, 255, 0.08);
+    .hint { font-size: 11px; color: var(--soft); margin-top: 5px; line-height: 1.5; }
+
+    /* ── presets ── */
+    .preset-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .chip {
+      padding: 4px 10px; border-radius: 99px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); font-size: 12px; cursor: pointer;
+      transition: all 0.14s;
     }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
 
-    .hint {
-      margin-top: 10px;
-      color: var(--soft);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    .preset-wrap {
-      margin-top: 18px;
-    }
-
-    .preset-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .controls-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 20px;
-    }
-
+    /* ── buttons ── */
     button {
-      border: 1px solid transparent;
-      cursor: pointer;
-      color: white;
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-weight: 700;
-      transition: transform 0.16s ease, opacity 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
+      border-radius: 9px; border: none;
+      cursor: pointer; padding: 9px 14px;
+      transition: all 0.14s;
     }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    button:hover {
-      transform: translateY(-1px);
+    .btn-primary {
+      background: var(--accent); color: #0e1117;
+      font-weight: 600;
     }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.1); }
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .primary-btn {
-      background: linear-gradient(135deg, var(--accent), #2563eb);
-      color: #07111f;
-      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.22);
-    }
-
-    .secondary-btn {
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      border-color: rgba(255,255,255,0.06);
-    }
-
-    .success-btn {
-      background: linear-gradient(135deg, #22c55e, #10b981);
-    }
-
-    .warning-btn {
-      background: linear-gradient(135deg, #f59e0b, #f97316);
-      color: #1f1302;
-    }
-
-    .danger-btn {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-    }
-
-    .full-width {
-      grid-column: 1 / -1;
-    }
-
-    .toolbar-btn {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.08);
-      color: var(--text);
-      padding: 10px 14px;
-    }
-
-    .speed-box,
-    .search-box {
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 16px;
-      background: var(--panel-soft);
+    .btn-ghost {
+      background: var(--surface2); color: var(--text);
       border: 1px solid var(--border);
     }
+    .btn-ghost:hover:not(:disabled) { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); }
 
-    .speed-row,
-    .search-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+    .btn-success { background: rgba(104,211,145,0.15); color: var(--accent4); border: 1px solid rgba(104,211,145,0.25); }
+    .btn-success:hover:not(:disabled) { background: rgba(104,211,145,0.22); }
+    .btn-warn { background: rgba(246,173,85,0.12); color: var(--accent3); border: 1px solid rgba(246,173,85,0.22); }
+    .btn-warn:hover:not(:disabled) { background: rgba(246,173,85,0.2); }
+    .btn-danger { background: rgba(252,129,129,0.1); color: var(--danger); border: 1px solid rgba(252,129,129,0.2); }
+    .btn-danger:hover:not(:disabled) { background: rgba(252,129,129,0.18); }
+    .btn-icon {
+      background: var(--surface2); color: var(--muted); border: 1px solid var(--border);
+      padding: 7px 12px; font-size: 12px;
+    }
+    .btn-icon:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+    .ctrl-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; margin-top: 4px;
+    }
+    .ctrl-grid .full { grid-column: 1 / -1; }
+
+    /* ── speed ── */
+    .speed-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: var(--muted); margin-bottom: 8px;
+    }
+    input[type="range"] {
+      width: 100%; accent-color: var(--accent);
+      height: 4px; cursor: pointer;
     }
 
-    #speedSlider,
-    #growthRangeSlider {
-      width: 100%;
-      margin-top: 12px;
-      accent-color: var(--accent);
+    /* ── stat grid ── */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat {
+      background: var(--surface2);
+      border-radius: 10px; padding: 10px 12px;
     }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+    .stat-value { font-size: 18px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .stat-value.accent { color: var(--accent); }
+    .stat-value.green { color: var(--accent4); }
+    .stat-value.amber { color: var(--accent3); }
+    .stat-value.purple { color: var(--accent2); }
 
-    .mode-note {
-      margin-top: 10px;
-      color: var(--soft);
-      font-size: 13px;
-      line-height: 1.6;
-    }
+    .status-idle { color: var(--muted); }
+    .status-ready { color: var(--accent); }
+    .status-playing { color: var(--accent4); }
+    .status-paused { color: var(--accent3); }
+    .status-done { color: var(--accent2); }
 
-    .stats-grid {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .stat-box {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-box::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      opacity: 0.7;
-    }
-
-    .stat-box span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .stat-box strong {
-      display: block;
-      margin-top: 10px;
-      font-size: 24px;
-      overflow-wrap: anywhere;
-    }
-
-    .status.idle { color: #94a3b8; }
-    .status.ready { color: var(--accent); }
-    .status.playing { color: #22c55e; }
-    .status.paused { color: #fbbf24; }
-    .status.done { color: var(--accent-2); }
-
-    .inset-card {
-      margin-top: 18px;
-      background: var(--panel-soft);
-    }
-
-    .simple-list {
-      padding-left: 18px;
-      margin-bottom: 0;
-      color: var(--muted);
-    }
-
-    .simple-list li {
-      margin-bottom: 8px;
-      line-height: 1.6;
-    }
-
-    .shortcuts {
-      margin-top: 14px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.07);
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
+    /* ── keyboard hints ── */
+    .shortcuts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .shortcut { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
     .kbd {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 26px;
-      height: 26px;
-      padding: 0 8px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 700;
-      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.06);
+      display: inline-block; padding: 2px 7px; border-radius: 5px;
+      background: var(--surface2); border: 1px solid var(--border);
+      font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text);
     }
 
-    .footer-note,
-    .rubric-note {
-      padding: 12px 14px;
-      margin-top: 14px;
-      border: 1px dashed rgba(255,255,255,0.1);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.02);
-      color: var(--soft);
-      font-size: 13px;
-      line-height: 1.6;
-    }
+    /* ── right column ── */
+    .right-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 
-    .rubric-note strong {
-      color: var(--text);
-    }
-
-    .banner-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .banner {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .banner span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .banner strong {
-      display: block;
-      margin-top: 8px;
-      font-size: 22px;
-      overflow-wrap: anywhere;
-    }
-
-    .parenthesization-box {
-      margin-top: 16px;
-      padding: 18px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(110, 231, 255, 0.08), rgba(167, 139, 250, 0.08));
-      border: 1px solid var(--border-strong);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-
-    .parenthesization-box span {
-      display: block;
-      color: var(--muted);
-      text-transform: uppercase;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-    }
-
-    .parenthesization-box strong {
-      display: block;
-      margin-top: 10px;
-      font-size: 24px;
-      color: var(--accent);
-      overflow-wrap: anywhere;
-    }
-
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .comparison-card {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-    }
-
-    .comparison-card.good {
-      background: linear-gradient(180deg, var(--success-soft), rgba(255,255,255,0.02));
-    }
-
-    .comparison-card.bad {
-      background: linear-gradient(180deg, var(--danger-soft), rgba(255,255,255,0.02));
-    }
-
-    .comparison-card.warn {
-      background: linear-gradient(180deg, var(--warn-soft), rgba(255,255,255,0.02));
-    }
-
-    .comparison-card span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .comparison-card strong {
-      display: block;
-      margin-top: 8px;
-      font-size: 22px;
-      overflow-wrap: anywhere;
-    }
-
-    .comparison-card p {
-      margin: 10px 0 0;
-      color: var(--soft);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .progress-wrap { margin: 0 0 12px; }
-
-    .progress-head {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .progress-bar {
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
+    /* ── progress strip ── */
+    .progress-strip { padding: 14px 18px; }
+    .progress-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .progress-bar { height: 4px; border-radius: 99px; background: rgba(255,255,255,0.06); overflow: hidden; }
     .progress-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
-      box-shadow: 0 0 22px rgba(110, 231, 255, 0.25);
-      transition: width 0.25s ease;
+      height: 100%; width: 0; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.3s ease;
     }
 
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin: 18px 0;
+    /* ── current info ── */
+    .info-band {
+      display: grid; grid-template-columns: repeat(6, 1fr);
+      gap: 1px; background: var(--border);
+      border-radius: 10px; overflow: hidden;
+      font-size: 12px;
     }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .swatch {
-      width: 18px;
-      height: 18px;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .swatch.base { background: var(--base); }
-    .swatch.active { background: var(--active); }
-    .swatch.candidate { background: var(--candidate); }
-    .swatch.dependency { background: var(--dependency); }
-    .swatch.finalized { background: var(--finalized); }
-
-    .svg-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .svg-card,
-    .chart-card {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--panel-soft);
-      padding: 12px;
-      overflow: auto;
-    }
-
-    .svg-card h3,
-    .chart-card h3 {
-      margin-top: 0;
-    }
-
-    .svg-wrap,
-    .chart-wrap {
-      overflow: auto;
-    }
-
-    svg.dp-svg,
-    svg.chart-svg {
-      display: block;
-      width: 100%;
-      min-width: 430px;
-      height: auto;
-    }
-
-    .bottom-grid,
-    .analysis-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px;
-    }
-
-    .explanation-box {
-      background: var(--panel-soft);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      line-height: 1.75;
-      color: var(--text);
-      min-height: 130px;
-    }
-
-    .pseudo-title {
-      margin-top: 18px;
-    }
-
-    .pseudocode-box {
-      background: var(--panel-soft);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
-      overflow: auto;
-      max-height: 430px;
-    }
-
-    .code-line {
-      display: grid;
-      grid-template-columns: 44px 1fr;
-      gap: 10px;
-      padding: 7px 10px;
-      border-radius: 10px;
-      color: #d7e7ff;
-      font-family: Consolas, monospace;
-      font-size: 14px;
-      transition: background 0.2s ease, outline 0.2s ease, transform 0.2s ease;
-    }
-
-    .code-line:hover {
-      transform: translateX(2px);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .code-line.active {
-      background: linear-gradient(90deg, rgba(110, 231, 255, 0.16), rgba(167, 139, 250, 0.14));
-      outline: 1px solid rgba(110, 231, 255, 0.28);
-      box-shadow: 0 0 0 1px rgba(110, 231, 255, 0.22);
-    }
-
-    .code-number {
-      color: #87b7ff;
-    }
-
-    .history-list {
-      max-height: 560px;
-      overflow: auto;
-      border-radius: 16px;
-    }
-
-    .history-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      overflow: hidden;
-      border-radius: 14px;
-    }
-
-    .history-table th,
-    .history-table td {
-      border: 1px solid rgba(255,255,255,0.08);
+    .info-cell {
+      background: var(--surface2);
       padding: 10px 12px;
-      text-align: left;
-      vertical-align: top;
-      line-height: 1.55;
     }
+    .info-cell .l { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .info-cell .v { font-weight: 600; margin-top: 2px; font-family: 'DM Mono', monospace; }
 
-    .history-table th {
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-
-    .history-table tbody tr {
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.15s ease;
-    }
-
-    .history-table tbody tr:hover {
-      background: rgba(255,255,255,0.04);
-    }
-
-    .history-table tbody tr:active {
-      transform: scale(0.998);
-    }
-
-    .active-history-row {
-      background: rgba(110, 231, 255, 0.10) !important;
-      outline: 1px solid rgba(110, 231, 255, 0.30);
-    }
-
-    .history-empty {
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
+    /* ── parenthesization ── */
+    .parent-box {
+      padding: 14px 18px;
+      background: rgba(99,179,237,0.05);
+      border: 1px solid rgba(99,179,237,0.15);
       border-radius: 12px;
-      background: rgba(255,255,255,0.03);
-      color: var(--muted);
     }
+    .parent-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+    .parent-value { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--accent); word-break: break-all; min-height: 24px; }
 
-    .edu-section {
-      margin-top: 24px;
-    }
+    /* ── tables grid ── */
+    .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .table-card-header { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+    .table-wrap { overflow: auto; padding: 12px; }
 
-    #workedExampleBox,
-    #keyConceptsBox,
-    #mistakesBox,
-    #clo2Box,
-    #counterexampleBox,
-    #worstCaseBox,
-    #comparisonExplainBox {
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    svg.dp-svg { display: block; width: 100%; height: auto; min-width: 300px; }
+
+    /* ── legend ── */
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--border); }
+    .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .leg-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+    /* ── comparison ── */
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .cmp-card {
+      border-radius: 12px; padding: 14px 16px;
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .cmp-card.optimal { border-color: rgba(104,211,145,0.25); background: rgba(104,211,145,0.05); }
+    .cmp-card.current { border-color: rgba(246,173,85,0.25); background: rgba(246,173,85,0.05); }
+    .cmp-card.baseline { border-color: rgba(252,129,129,0.2); background: rgba(252,129,129,0.04); }
+    .cmp-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+    .cmp-val { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .cmp-card.optimal .cmp-val { color: var(--accent4); }
+    .cmp-card.current .cmp-val { color: var(--accent3); }
+    .cmp-card.baseline .cmp-val { color: var(--danger); }
+    .cmp-desc { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+    /* ── step area ── */
+    .step-area { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* ── explanation box ── */
+    .explain-box {
+      background: var(--surface2); border-radius: 10px;
+      padding: 14px 16px; font-size: 13px; line-height: 1.7;
+      min-height: 80px; color: var(--text);
+    }
+    .explain-note { margin-top: 8px; font-size: 12px; color: var(--muted); }
+
+    /* ── pseudocode ── */
+    .pseudo-wrap { overflow: auto; max-height: 360px; border-radius: 10px; }
+    .code-line {
+      display: grid; grid-template-columns: 32px 1fr;
+      padding: 5px 10px; gap: 8px;
+      font-family: 'DM Mono', monospace; font-size: 12px;
+      color: var(--muted); border-radius: 6px;
+      transition: background 0.15s;
+      cursor: default;
+    }
+    .code-line:hover { background: rgba(255,255,255,0.03); }
+    .code-line.active { background: rgba(99,179,237,0.12); color: var(--text); }
+    .code-line.active .ln { color: var(--accent); }
+    .ln { color: var(--soft); user-select: none; }
+
+    /* ── history ── */
+    .history-wrap { overflow: auto; max-height: 380px; border-radius: 10px; }
+    table.hist {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+    }
+    table.hist th {
+      background: var(--surface2); padding: 8px 10px; text-align: left;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+      position: sticky; top: 0; z-index: 1;
+    }
+    table.hist td { padding: 8px 10px; border-top: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    table.hist tr { cursor: pointer; transition: background 0.12s; }
+    table.hist tr:hover td { background: rgba(255,255,255,0.03); }
+    table.hist tr.hl td { background: rgba(99,179,237,0.1); }
+
+    /* ── chart ── */
+    svg.chart-svg { display: block; width: 100%; height: auto; min-width: 500px; }
+
+    /* ── notes section (collapsible) ── */
+    .notes-toggle {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 18px; background: none; border: none; color: var(--text);
+      cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .notes-toggle:hover { background: rgba(255,255,255,0.03); }
+    .notes-toggle .chevron { color: var(--muted); transition: transform 0.2s; }
+    .notes-toggle.open .chevron { transform: rotate(180deg); }
+
+    .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 18px 18px; }
+    .note-card {
+      background: var(--surface2); border-radius: 10px; padding: 14px;
+    }
+    .note-card h4 { font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--accent); }
+    .note-card p, .note-card li { font-size: 12px; color: var(--muted); line-height: 1.65; }
+    .note-card ul { padding-left: 16px; }
+    .note-card li { margin-bottom: 4px; }
+
+    /* ── mode badge ── */
+    .mode-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 99px;
+      font-size: 11px; font-weight: 600;
+      background: rgba(99,179,237,0.12); color: var(--accent);
+      border: 1px solid rgba(99,179,237,0.2);
     }
 
-    #workedExampleBox h3,
-    #keyConceptsBox h3,
-    #mistakesBox h3,
-    #clo2Box h3,
-    #counterexampleBox h3,
-    #worstCaseBox h3,
-    #comparisonExplainBox h3 {
-      margin-top: 0;
-      margin-bottom: 12px;
-      color: var(--accent);
+    /* ── section heading ── */
+    .section-heading {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;
     }
 
-    #workedExampleBox p,
-    #workedExampleBox li,
-    #keyConceptsBox li,
-    #mistakesBox li,
-    #clo2Box li,
-    #counterexampleBox li,
-    #worstCaseBox li,
-    #comparisonExplainBox li,
-    #comparisonExplainBox p {
-      color: var(--muted);
-      line-height: 1.7;
+    /* ── growth range ── */
+    .chart-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .chart-controls label { font-size: 12px; color: var(--muted); margin: 0; white-space: nowrap; }
+    .chart-controls input { flex: 1; }
+    .chart-controls span { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+    /* ── flash ── */
+    .flash { animation: flash 220ms ease; }
+    @keyframes flash { from { opacity: 0.72; transform: translateY(1px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── gentle content transitions ── */
+    .soft-refresh { animation: softRefresh 240ms ease; }
+    @keyframes softRefresh {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    #workedExampleBox ol,
-    #keyConceptsBox ul,
-    #mistakesBox ul,
-    #clo2Box ul,
-    #counterexampleBox ul,
-    #worstCaseBox ul,
-    #comparisonExplainBox ul {
-      margin: 0;
-      padding-left: 22px;
-    }
-
-    #workedExampleBox li,
-    #keyConceptsBox li,
-    #mistakesBox li,
-    #clo2Box li,
-    #counterexampleBox li,
-    #worstCaseBox li,
-    #comparisonExplainBox li {
-      margin-bottom: 8px;
-    }
-
-    #mistakesBox { border-left: 4px solid var(--accent-3); }
-    #keyConceptsBox { border-left: 4px solid var(--accent); }
-    #workedExampleBox { border-left: 4px solid var(--accent-2); }
-    #clo2Box { border-left: 4px solid #22c55e; }
-    #counterexampleBox { border-left: 4px solid #ef4444; }
-    #worstCaseBox { border-left: 4px solid #f59e0b; }
-    #comparisonExplainBox { border-left: 4px solid #60a5fa; }
-
-    .flash-update {
-      animation: flashUpdate 220ms ease;
-    }
-
-    @keyframes flashUpdate {
-      0% { transform: scale(0.995); opacity: 0.92; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    #overviewBody[hidden] {
-      display: none;
-    }
-
-    @media (max-width: 1200px) {
-      .tool-layout,
-      .bottom-grid,
-      .analysis-grid,
-      .svg-grid,
-      .notes-grid {
-        grid-template-columns: 1fr;
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
-
-      .banner-row,
-      .comparison-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero h1 {
-        font-size: 42px;
-      }
-
-      .control-panel {
-        position: static;
-      }
     }
 
-    @media (max-width: 980px) {
-      .tool-layout {
-        grid-template-columns: 1fr;
-      }
+    /* ── empty state ── */
+    .empty { color: var(--muted); font-size: 13px; padding: 8px 0; }
 
-      .control-panel {
-        position: static;
-      }
+    @media (max-width: 1100px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .tables-grid, .cmp-grid, .step-area, .notes-grid { grid-template-columns: 1fr; }
     }
-
     @media (max-width: 700px) {
-      body {
-        padding: 14px;
-      }
-
-      .hero h1 {
-        font-size: 32px;
-      }
-
-      .controls-grid,
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .history-table th,
-      .history-table td {
-        font-size: 13px;
-        padding: 8px 10px;
-      }
+      .info-band { grid-template-columns: repeat(3, 1fr); }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="hero">
+<div class="shell">
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="page-title">
       <h1>Matrix Chain Multiplication</h1>
-      <p class="subtitle">Interactive Lecture Tool • Algorithms I • Fares Al Qedrah • 20220002060</p>
-      <div class="top-toolbar">
-        <button id="themeBtn" class="toolbar-btn">Switch Theme</button>
-        <button id="exportBtn" class="toolbar-btn">Export Summary</button>
-      </div>
-    </header>
+      <p>Algorithms I · Fares Al Qedrah · 20220002060</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="themeBtn">Theme</button>
+      <button class="btn-icon" id="exportBtn">Export ↓</button>
+    </div>
+  </header>
 
-    <section class="card lecture-notes">
-      <h2>Lecture Notes — Start Here</h2>
-      <div style="margin-bottom:14px">
-        <button id="overviewToggle" class="toolbar-btn" aria-expanded="true">Hide Overview</button>
-      </div>
-      <div id="overviewBody">
-        <div class="notes-grid">
-          <div>
-            <h3>1. What is the problem?</h3>
-            <p>Given matrices A₁, A₂, ..., Aₙ, we want to find the best parenthesization so the total number of scalar multiplications is as small as possible.</p>
-          </div>
-          <div>
-            <h3>2. Why does order matter?</h3>
-            <p>Matrix multiplication is associative, so the final matrix is the same, but the scalar cost can change dramatically depending on where the chain is split.</p>
-          </div>
-          <div>
-            <h3>3. Dynamic Programming insight</h3>
-            <p>Large ranges are solved using smaller optimal subproblems. Since many subproblems repeat, dynamic programming stores them in a table and reuses them.</p>
-          </div>
-          <div>
-            <h3>4. Tables used</h3>
-            <p>We use <strong>m[i][j]</strong> for the minimum multiplication cost and <strong>s[i][j]</strong> for the best split point k for Aᵢ...Aⱼ.</p>
-          </div>
-          <div>
-            <h3>5. CLO-2 angle</h3>
-            <p>This algorithm does not sort matrices. Instead, it performs a <strong>search over possible split points k</strong>. This page explicitly compares full search against weaker search strategies.</p>
-          </div>
-          <div>
-            <h3>6. Complexity</h3>
-            <p>Dynamic programming solves Matrix Chain Multiplication in <strong>O(n³)</strong> time and <strong>O(n²)</strong> space, which is far better than brute force over all parenthesizations.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="main-layout">
 
-    <section class="tool-layout">
-      <aside class="card control-panel">
-        <h2>Controls</h2>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-        <label for="dimsInput" class="label">Matrix Dimensions</label>
-        <input id="dimsInput" type="text" value="30,35,15,5,10,20,25" placeholder="Example: 30,35,15,5,10,20,25" />
-        <div class="hint">
-          Enter dimensions p₀,p₁,...,pₙ. This defines matrices:
-          A₁(p₀×p₁), A₂(p₁×p₂), ..., Aₙ(pₙ₋₁×pₙ)
-        </div>
+      <!-- Input -->
+      <div class="panel">
+        <div class="panel-title">Setup</div>
 
-        <div class="preset-wrap">
-          <div class="label">Presets</div>
-          <div class="preset-buttons">
-            <button class="secondary-btn" data-preset="10,20,30,40">Small</button>
-            <button class="secondary-btn" data-preset="30,35,15,5,10,20,25">Classic</button>
-            <button class="secondary-btn" data-preset="5,10,3,12,5,50,6">Contrast</button>
-            <button class="secondary-btn" data-preset="40,20,30,10,30">Greedy Trap</button>
-            <button class="secondary-btn" data-preset="5,10,3,12,5,50,6,7,8,9">Worst-Case Size</button>
+        <label for="dimsInput">Matrix dimensions</label>
+        <input id="dimsInput" type="text" value="30,35,15,5,10,20,25" placeholder="e.g. 30,35,15,5,10,20,25" />
+        <p class="hint">p₀,p₁,...,pₙ defines A₁(p₀×p₁), A₂(p₁×p₂)…</p>
+
+        <div style="margin-top:14px">
+          <label>Presets</label>
+          <div class="preset-chips">
+            <span class="chip" data-preset="10,20,30,40">Small</span>
+            <span class="chip" data-preset="30,35,15,5,10,20,25">Classic</span>
+            <span class="chip" data-preset="5,10,3,12,5,50,6">Contrast</span>
+            <span class="chip" data-preset="40,20,30,10,30">Greedy trap</span>
+            <span class="chip" data-preset="5,10,3,12,5,50,6,7,8,9">Stress test</span>
           </div>
         </div>
 
-        <div class="search-box">
-          <div class="search-row">
-            <span class="label" style="margin:0">Split Search Mode</span>
-            <strong id="modeBadge">Exhaustive</strong>
-          </div>
-          <select id="searchModeSelect" aria-label="Search mode">
-            <option value="exhaustive">Exhaustive search over all k (correct DP)</option>
-            <option value="first">Check only the first split k = i</option>
-            <option value="middle">Check only the middle split</option>
-            <option value="greedy">Greedy local multiplication cost only</option>
+        <div style="margin-top:14px">
+          <label for="searchModeSelect">Split search mode <span id="modeBadge" class="mode-badge">Exhaustive</span></label>
+          <select id="searchModeSelect">
+            <option value="exhaustive">Exhaustive — all k (correct DP)</option>
+            <option value="first">First split only — k = i</option>
+            <option value="middle">Middle split only</option>
+            <option value="greedy">Greedy local cost</option>
           </select>
-          <div id="modeNote" class="mode-note">
-            Exhaustive mode checks every legal split k and guarantees the optimal answer.
-          </div>
+          <p class="hint" id="modeNote">Checks every legal k. Guarantees the optimal answer.</p>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="panel">
+        <div class="panel-title">Playback</div>
+        <div class="ctrl-grid">
+          <button class="btn-primary full" id="buildBtn">Build steps</button>
+          <button class="btn-ghost" id="stepBtn" disabled>Step →</button>
+          <button class="btn-success" id="playBtn" disabled>Play</button>
+          <button class="btn-warn" id="pauseBtn" disabled>Pause</button>
+          <button class="btn-danger full" id="resetBtn">Reset</button>
         </div>
 
-        <div class="controls-grid">
-          <button id="buildBtn" class="primary-btn">Build Steps</button>
-          <button id="stepBtn" class="secondary-btn">Step</button>
-          <button id="playBtn" class="success-btn">Play</button>
-          <button id="pauseBtn" class="warning-btn">Pause</button>
-          <button id="resetBtn" class="danger-btn full-width">Reset</button>
+        <div style="margin-top:16px">
+          <div class="speed-row">
+            <span>Speed</span>
+            <strong id="speedValue" style="font-size:12px;color:var(--text)">1.00×</strong>
+          </div>
+          <input type="range" id="speedSlider" min="0.25" max="4" step="0.25" value="1" />
         </div>
 
-        <div class="speed-box">
-          <div class="speed-row"><span>Speed</span><strong id="speedValue">1.00x</strong></div>
-          <input id="speedSlider" type="range" min="0.25" max="4" step="0.25" value="1" />
+        <div class="shortcuts" style="margin-top:14px">
+          <div class="shortcut"><span class="kbd">Space</span> Play/Pause</div>
+          <div class="shortcut"><span class="kbd">→</span> Step</div>
+          <div class="shortcut"><span class="kbd">R</span> Reset</div>
         </div>
+      </div>
 
-        <div class="stats-grid">
-          <div class="stat-box"><span>Step</span><strong id="stepCounter">0 / 0</strong></div>
-          <div class="stat-box"><span>Status</span><strong id="statusText" class="status idle">Idle</strong></div>
-          <div class="stat-box"><span>Subproblems</span><strong id="subproblemsCount">0</strong></div>
-          <div class="stat-box"><span>Split Checks</span><strong id="splitChecksCount">0</strong></div>
-          <div class="stat-box"><span>DP Writes</span><strong id="dpWritesCount">0</strong></div>
-          <div class="stat-box"><span>Current Best</span><strong id="currentBestCost">—</strong></div>
-          <div class="stat-box"><span>Optimal Cost</span><strong id="optimalCostBox">—</strong></div>
-          <div class="stat-box"><span>Left-to-Right Cost</span><strong id="ltrCostBox">—</strong></div>
-          <div class="stat-box"><span>Cost Saved</span><strong id="savedCostBox">—</strong></div>
-          <div class="stat-box"><span>Brute Force Cases</span><strong id="bruteForceCountBox">—</strong></div>
+      <!-- Stats -->
+      <div class="panel">
+        <div class="panel-title">Stats</div>
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat-label">Status</div>
+            <div class="stat-value accent status-idle" id="statusText">Idle</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Step</div>
+            <div class="stat-value" id="stepCounter">0 / 0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Subproblems</div>
+            <div class="stat-value" id="subproblemsCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Split checks</div>
+            <div class="stat-value purple" id="splitChecksCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">DP writes</div>
+            <div class="stat-value" id="dpWritesCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Current best</div>
+            <div class="stat-value amber" id="currentBestCost">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Optimal cost</div>
+            <div class="stat-value green" id="optimalCostBox">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Cost saved</div>
+            <div class="stat-value green" id="savedCostBox">—</div>
+          </div>
         </div>
+      </div>
 
-        <div class="card inset-card">
-          <h3>Complexity Summary</h3>
-          <ul class="simple-list">
-            <li><strong>Time:</strong> O(n³) for exhaustive DP</li>
-            <li><strong>Space:</strong> O(n²)</li>
-            <li><strong>Brute Force:</strong> Catalan-number growth in parenthesizations</li>
-            <li><strong>CLO-2:</strong> search over split points k is the key operation being compared</li>
-          </ul>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="right-col">
+
+      <!-- Progress + info band -->
+      <div class="panel" style="padding:0; overflow:hidden">
+        <div class="progress-strip">
+          <div class="progress-row">
+            <span>Algorithm progress</span>
+            <span id="progressLabel">0%</span>
+          </div>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
         </div>
-
-        <div class="shortcuts">
-          <span><span class="kbd">Space</span> Play/Pause</span>
-          <span><span class="kbd">→</span> Step</span>
-          <span><span class="kbd">R</span> Reset</span>
+        <div class="info-band" id="infoBand">
+          <div class="info-cell"><div class="l">Range</div><div class="v" id="currentRange">—</div></div>
+          <div class="info-cell"><div class="l">Split k</div><div class="v" id="currentSplit">—</div></div>
+          <div class="info-cell"><div class="l">Length L</div><div class="v" id="currentLength">—</div></div>
+          <div class="info-cell"><div class="l">Pointer i</div><div class="v" id="pointerI">—</div></div>
+          <div class="info-cell"><div class="l">Pointer j</div><div class="v" id="pointerJ">—</div></div>
+          <div class="info-cell"><div class="l">Pointer k</div><div class="v" id="pointerK">—</div></div>
         </div>
+      </div>
 
-        <div class="footer-note">
-          Demo tip: use <strong>Classic + Exhaustive</strong> for the correct algorithm, then switch to <strong>Greedy Trap + Greedy</strong> or <strong>First Split</strong> to prove that weaker strategies can give worse answers.
+      <!-- Parenthesization -->
+      <div class="parent-box">
+        <div class="parent-label">Best parenthesization so far</div>
+        <div class="parent-value" id="parenthesizationText">—</div>
+      </div>
+
+      <!-- DP Tables -->
+      <div>
+        <div class="section-heading">DP Tables</div>
+        <div class="tables-grid">
+          <div class="table-card">
+            <div class="table-card-header">Cost table m[i][j]</div>
+            <div class="table-wrap" id="costSvgWrap"></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:var(--cell-base)"></div>Base</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--cell-active)"></div>Active</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--cell-candidate)"></div>Candidate</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--cell-dependency)"></div>Dependency</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--cell-finalized)"></div>Finalized</div>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-card-header">Split table s[i][j]</div>
+            <div class="table-wrap" id="splitSvgWrap"></div>
+          </div>
         </div>
+      </div>
 
-        <div class="rubric-note">
-          <strong>Rubric coverage:</strong> this version adds a growth chart, theoretical-vs-actual comparison, explicit search-mode analysis, cost-saved comparison, worst-case discussion, and a counterexample where a different strategy performs worse.
+      <!-- Comparison -->
+      <div>
+        <div class="section-heading">Strategy comparison</div>
+        <div class="cmp-grid">
+          <div class="cmp-card optimal">
+            <div class="cmp-label">Exhaustive DP</div>
+            <div class="cmp-val" id="compareDpCost">—</div>
+            <div class="cmp-desc">Checks all split points k. Guaranteed optimal.</div>
+          </div>
+          <div class="cmp-card current">
+            <div class="cmp-label">Current mode</div>
+            <div class="cmp-val" id="compareModeCost">—</div>
+            <div class="cmp-desc" id="compareModeText">Build steps to compare.</div>
+          </div>
+          <div class="cmp-card baseline">
+            <div class="cmp-label">Left-to-right</div>
+            <div class="cmp-val" id="compareLtrCost">—</div>
+            <div class="cmp-desc">No search. Multiplies left to right.</div>
+          </div>
         </div>
-      </aside>
+      </div>
 
-      <main class="visual-column">
-        <section class="card">
-          <h2>Interactive Visualization</h2>
-
-          <div class="banner-row">
-            <div class="banner"><span>Current Range</span><strong id="currentRange">—</strong></div>
-            <div class="banner"><span>Current Split</span><strong id="currentSplit">—</strong></div>
-            <div class="banner"><span>Chain Length</span><strong id="currentLength">—</strong></div>
-          </div>
-
-          <div class="banner-row" style="margin-top:12px">
-            <div class="banner"><span>Pointer i</span><strong id="pointerI">—</strong></div>
-            <div class="banner"><span>Pointer j</span><strong id="pointerJ">—</strong></div>
-            <div class="banner"><span>Pointer k</span><strong id="pointerK">—</strong></div>
-          </div>
-
-          <div class="parenthesization-box">
-            <div class="progress-wrap">
-              <div class="progress-head"><span>Algorithm Progress</span><span id="progressLabel">0%</span></div>
-              <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-            </div>
-            <span>Best Parenthesization So Far</span>
-            <strong id="parenthesizationText">—</strong>
-          </div>
-
-          <div class="comparison-grid">
-            <div class="comparison-card good">
-              <span>Exhaustive DP</span>
-              <strong id="compareDpCost">—</strong>
-              <p>Checks all valid split points and guarantees the optimal answer.</p>
-            </div>
-            <div class="comparison-card warn">
-              <span>Current Mode Result</span>
-              <strong id="compareModeCost">—</strong>
-              <p id="compareModeText">Build steps to compare the selected search mode.</p>
-            </div>
-            <div class="comparison-card bad">
-              <span>Left-to-Right Baseline</span>
-              <strong id="compareLtrCost">—</strong>
-              <p>Multiplies from left to right without searching for the best split.</p>
+      <!-- Step explanation + pseudocode -->
+      <div>
+        <div class="section-heading">Current step</div>
+        <div class="step-area">
+          <div>
+            <div class="explain-box" id="explanationText">
+              Press <strong>Build steps</strong> to generate the dynamic programming trace.
             </div>
           </div>
-
-          <div class="legend">
-            <div class="legend-item"><span class="swatch base"></span> Base Case</div>
-            <div class="legend-item"><span class="swatch active"></span> Active Cell</div>
-            <div class="legend-item"><span class="swatch candidate"></span> Candidate Split</div>
-            <div class="legend-item"><span class="swatch dependency"></span> Dependency</div>
-            <div class="legend-item"><span class="swatch finalized"></span> Finalized</div>
+          <div>
+            <div class="pseudo-wrap" id="pseudocodeBox"></div>
           </div>
-
-          <div class="svg-grid">
-            <div class="svg-card">
-              <h3>Cost Table m[i][j]</h3>
-              <div class="svg-wrap" id="costSvgWrap"></div>
-            </div>
-            <div class="svg-card">
-              <h3>Split Table s[i][j]</h3>
-              <div class="svg-wrap" id="splitSvgWrap"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card chart-section">
-          <h2>Growth Curve and Algorithm Comparison</h2>
-
-          <div class="speed-box" style="margin-bottom:14px">
-            <div class="speed-row">
-              <span>Growth Chart Range</span>
-              <strong id="growthRangeValue">2 to 9 matrices</strong>
-            </div>
-            <input id="growthRangeSlider" type="range" min="6" max="9" step="1" value="9" />
-            <div class="hint">
-              Adjust how many matrix counts appear on the chart. The chart will plot sizes from 2 up to the selected value.
-            </div>
-          </div>
-
-          <div class="chart-card">
-            <h3>Actual vs Theoretical Growth</h3>
-            <div class="chart-wrap" id="growthChartWrap"></div>
-            <div class="hint">
-              The chart shows actual split checks for exhaustive DP, the theoretical cubic curve n³, and Catalan growth for brute-force parenthesizations.
-            </div>
-          </div>
-        </section>
-
-        <div class="bottom-grid">
-          <section class="card">
-            <h2>Step Explanation</h2>
-            <div id="explanationText" class="explanation-box">Press <strong>Build Steps</strong> to generate the dynamic programming trace.</div>
-            <h3 class="pseudo-title">Pseudocode</h3>
-            <div id="pseudocodeBox" class="pseudocode-box"></div>
-          </section>
-
-          <section class="card">
-            <h2>Recent History</h2>
-            <div id="historyList" class="history-list">
-              <div class="history-empty">No steps yet.</div>
-            </div>
-          </section>
         </div>
+      </div>
 
-        <section class="card analysis-column">
-          <h2>Requirement Coverage and Teaching Notes</h2>
-          <div class="analysis-grid">
-            <div id="workedExampleBox"></div>
-            <div id="keyConceptsBox"></div>
-            <div id="mistakesBox"></div>
-            <div id="clo2Box"></div>
-            <div id="counterexampleBox"></div>
-            <div id="worstCaseBox"></div>
+      <!-- History -->
+      <div>
+        <div class="section-heading">Step history</div>
+        <div class="history-wrap panel" style="padding:0; overflow:auto">
+          <div id="historyList" style="min-height:60px"></div>
+        </div>
+      </div>
+
+      <!-- Growth chart -->
+      <div class="panel">
+        <div class="section-heading">Growth analysis</div>
+        <div class="chart-controls">
+          <label for="growthRangeSlider">Max n</label>
+          <input type="range" id="growthRangeSlider" min="6" max="9" step="1" value="9" style="max-width:200px" />
+          <span id="growthRangeValue">up to 9</span>
+        </div>
+        <div id="growthChartWrap" style="overflow:auto"></div>
+      </div>
+
+      <!-- Notes (collapsible) -->
+      <div class="panel" style="padding:0">
+        <button class="notes-toggle open" id="notesToggle">
+          <span>Lecture notes</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div id="notesBody">
+          <div class="notes-grid">
+            <div class="note-card">
+              <h4>What is the problem?</h4>
+              <p>Given matrices A₁…Aₙ, find the parenthesization that minimises scalar multiplications. Order matters because different groupings can have wildly different costs.</p>
+            </div>
+            <div class="note-card">
+              <h4>DP insight</h4>
+              <p>Large ranges are solved from smaller optimal subproblems. We store results in <strong>m[i][j]</strong> (min cost) and <strong>s[i][j]</strong> (best split k) to avoid recomputing.</p>
+            </div>
+            <div class="note-card">
+              <h4>CLO-2 — role of search</h4>
+              <ul>
+                <li>The key operation is <em>searching</em> all valid split points k per subproblem.</li>
+                <li>Restricting search (first / middle / greedy) can produce suboptimal answers.</li>
+                <li>Use <em>Greedy Trap</em> preset to see a concrete counterexample.</li>
+              </ul>
+            </div>
+            <div class="note-card">
+              <h4>Complexity</h4>
+              <ul>
+                <li>Time: O(n³) — three nested loops</li>
+                <li>Space: O(n²) — two n×n tables</li>
+                <li>Brute force: Catalan-number growth</li>
+              </ul>
+            </div>
+            <div class="note-card">
+              <h4>Common mistakes</h4>
+              <ul>
+                <li>Wrong index in p[i-1] × p[k] × p[j]</li>
+                <li>Assuming left-to-right is optimal</li>
+                <li>Assuming greedy split is globally optimal</li>
+              </ul>
+            </div>
+            <div class="note-card">
+              <h4>How to use this tool</h4>
+              <p>Start with <strong>Classic + Exhaustive</strong>. Then switch to Greedy or First-split on the same input to prove weaker search gives worse results.</p>
+            </div>
           </div>
-          <div style="margin-top:18px" id="comparisonExplainBox"></div>
-        </section>
-      </main>
-    </section>
+        </div>
+      </div>
+
+    </main>
   </div>
+</div>
 
-  <script>
-    const dimsInput = document.getElementById("dimsInput");
-    const buildBtn = document.getElementById("buildBtn");
-    const stepBtn = document.getElementById("stepBtn");
-    const playBtn = document.getElementById("playBtn");
-    const pauseBtn = document.getElementById("pauseBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const speedSlider = document.getElementById("speedSlider");
-    const speedValue = document.getElementById("speedValue");
-    const themeBtn = document.getElementById("themeBtn");
-    const exportBtn = document.getElementById("exportBtn");
-    const searchModeSelect = document.getElementById("searchModeSelect");
-    const modeBadge = document.getElementById("modeBadge");
-    const modeNote = document.getElementById("modeNote");
+<script>
+// ── helpers ──────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+function esc(t) { return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function cloneMat(m) { return m.map(r => r.slice()); }
 
-    const growthRangeSlider = document.getElementById("growthRangeSlider");
-    const growthRangeValue = document.getElementById("growthRangeValue");
+// ── elements ─────────────────────────────────────────────────────────────────
+const dimsInput      = $("dimsInput");
+const buildBtn       = $("buildBtn");
+const stepBtn        = $("stepBtn");
+const playBtn        = $("playBtn");
+const pauseBtn       = $("pauseBtn");
+const resetBtn       = $("resetBtn");
+const speedSlider    = $("speedSlider");
+const speedValueEl   = $("speedValue");
+const modeSelect     = $("searchModeSelect");
+const modeBadge      = $("modeBadge");
+const modeNote       = $("modeNote");
+const statusText     = $("statusText");
+const stepCounter    = $("stepCounter");
+const progressFill   = $("progressFill");
+const progressLabel  = $("progressLabel");
+const subproblems    = $("subproblemsCount");
+const splitChecks    = $("splitChecksCount");
+const dpWrites       = $("dpWritesCount");
+const curBest        = $("currentBestCost");
+const optCost        = $("optimalCostBox");
+const savedCost      = $("savedCostBox");
+const currentRange   = $("currentRange");
+const currentSplit   = $("currentSplit");
+const currentLength  = $("currentLength");
+const pointerI       = $("pointerI");
+const pointerJ       = $("pointerJ");
+const pointerK       = $("pointerK");
+const parentText     = $("parenthesizationText");
+const explanText     = $("explanationText");
+const costWrap       = $("costSvgWrap");
+const splitWrap      = $("splitSvgWrap");
+const pseudoBox      = $("pseudocodeBox");
+const histList       = $("historyList");
+const growthSlider   = $("growthRangeSlider");
+const growthLabel    = $("growthRangeValue");
+const growthWrap     = $("growthChartWrap");
+const cmpDp          = $("compareDpCost");
+const cmpMode        = $("compareModeCost");
+const cmpLtr         = $("compareLtrCost");
+const cmpModeText    = $("compareModeText");
+const notesToggle    = $("notesToggle");
+const notesBody      = $("notesBody");
 
-    const stepCounter = document.getElementById("stepCounter");
-    const statusText = document.getElementById("statusText");
-    const subproblemsCount = document.getElementById("subproblemsCount");
-    const splitChecksCount = document.getElementById("splitChecksCount");
-    const dpWritesCount = document.getElementById("dpWritesCount");
-    const currentBestCost = document.getElementById("currentBestCost");
-    const optimalCostBox = document.getElementById("optimalCostBox");
-    const ltrCostBox = document.getElementById("ltrCostBox");
-    const savedCostBox = document.getElementById("savedCostBox");
-    const bruteForceCountBox = document.getElementById("bruteForceCountBox");
+// ── state ─────────────────────────────────────────────────────────────────────
+let app = {
+  dims:[], n:0, steps:[], cur:-1, status:"idle", timer:null, speed:1,
+  mode:"exhaustive", summary:null, growthMax:9, themeIdx:0
+};
 
-    const currentRange = document.getElementById("currentRange");
-    const currentSplit = document.getElementById("currentSplit");
-    const currentLength = document.getElementById("currentLength");
-    const parenthesizationText = document.getElementById("parenthesizationText");
-    const explanationText = document.getElementById("explanationText");
-    const costSvgWrap = document.getElementById("costSvgWrap");
-    const splitSvgWrap = document.getElementById("splitSvgWrap");
-    const pseudocodeBox = document.getElementById("pseudocodeBox");
-    const historyList = document.getElementById("historyList");
-    const progressFill = document.getElementById("progressFill");
-    const progressLabel = document.getElementById("progressLabel");
-    const pointerI = document.getElementById("pointerI");
-    const pointerJ = document.getElementById("pointerJ");
-    const pointerK = document.getElementById("pointerK");
-    const overviewToggle = document.getElementById("overviewToggle");
-    const overviewBody = document.getElementById("overviewBody");
-    const workedExampleBox = document.getElementById("workedExampleBox");
-    const keyConceptsBox = document.getElementById("keyConceptsBox");
-    const mistakesBox = document.getElementById("mistakesBox");
-    const clo2Box = document.getElementById("clo2Box");
-    const counterexampleBox = document.getElementById("counterexampleBox");
-    const worstCaseBox = document.getElementById("worstCaseBox");
-    const comparisonExplainBox = document.getElementById("comparisonExplainBox");
-    const growthChartWrap = document.getElementById("growthChartWrap");
+const THEMES = ["", "theme-warm", "theme-light"];
 
-    const compareDpCost = document.getElementById("compareDpCost");
-    const compareModeCost = document.getElementById("compareModeCost");
-    const compareModeText = document.getElementById("compareModeText");
-    const compareLtrCost = document.getElementById("compareLtrCost");
+// ── mode config ───────────────────────────────────────────────────────────────
+const MODES = {
+  exhaustive: { badge:"Exhaustive", note:"Checks every legal k. Guarantees the optimal answer." },
+  first:      { badge:"First split", note:"Only checks k = i. Faster but misses optimal answers." },
+  middle:     { badge:"Middle split", note:"Only checks the midpoint. No correctness guarantee." },
+  greedy:     { badge:"Greedy", note:"Picks cheapest immediate cost only. Can fail globally." }
+};
 
-    const pseudocodeLines = [
-      { text: "MATRIX-CHAIN-ORDER(p, mode)", tip: "Start the dynamic programming algorithm using dimensions p and the selected search strategy." },
-      { text: "n = p.length - 1", tip: "The number of matrices is one less than the number of dimensions." },
-      { text: "for i = 1 to n", tip: "Initialize base cases for single matrices." },
-      { text: "m[i,i] = 0", tip: "A single matrix requires no multiplication cost." },
-      { text: "for L = 2 to n", tip: "Process chains in increasing length order." },
-      { text: "for i = 1 to n - L + 1", tip: "Pick the start index of each chain." },
-      { text: "j = i + L - 1", tip: "Compute the ending index for the current chain." },
-      { text: "m[i,j] = +∞", tip: "Initialize the current cell before searching for the best split." },
-      { text: "Choose candidate split set K(i,j,mode)", tip: "This is the CLO-2 search step: exhaustive checks all k, weaker modes check fewer." },
-      { text: "for each k in K(i,j,mode)", tip: "Evaluate each allowed split point k." },
-      { text: "q = m[i,k] + m[k+1,j] + p[i-1] * p[k] * p[j]", tip: "Candidate cost combines the left subproblem, right subproblem, and final multiplication." },
-      { text: "if q < m[i,j]", tip: "Check if the candidate improves the best known answer." },
-      { text: "m[i,j] = q; s[i,j] = k", tip: "Store the best cost and the split point that achieved it." }
-    ];
+const PSEUDOCODE = [
+  ["MATRIX-CHAIN-ORDER(p, mode)", "Entry point."],
+  ["n = p.length - 1", "Number of matrices."],
+  ["for i = 1 to n", "Initialize base cases."],
+  ["  m[i,i] = 0", "Single matrix: zero cost."],
+  ["for L = 2 to n", "Chains in increasing length."],
+  ["  for i = 1 to n-L+1", "Pick chain start index."],
+  ["    j = i + L - 1", "Compute chain end index."],
+  ["    m[i,j] = +∞", "Initialize cell to infinity."],
+  ["    K = candidates(i,j,mode)", "CLO-2 search step."],
+  ["    for each k in K", "Evaluate each split point."],
+  ["      q = m[i,k]+m[k+1,j]+p[i-1]·p[k]·p[j]", "Compute candidate cost."],
+  ["      if q < m[i,j]", "Found an improvement?"],
+  ["        m[i,j]=q; s[i,j]=k", "Update best cost and split."]
+];
 
-    const workedExamples = {
-      classic: {
-        dims: "30,35,15,5,10,20,25",
-        title: "Worked Example: Classic Textbook Case",
-        lines: [
-          "Matrices: A1(30×35), A2(35×15), A3(15×5), A4(5×10), A5(10×20), A6(20×25).",
-          "The DP table is filled diagonally from shorter chains to longer chains.",
-          "For a cell like m[2][4], the algorithm searches all legal split points k between 2 and 3.",
-          "The split table s[i][j] stores which k produced the cheapest result.",
-          "The final answer is reconstructed from s[1][n]."
-        ]
+// ── core algorithm ────────────────────────────────────────────────────────────
+function createMat(n, fill=null){ return Array.from({length:n+1},()=>Array(n+1).fill(fill)); }
+
+function catalan(n){
+  if(n<=1)return 1;
+  const dp=Array(n).fill(0); dp[0]=1;
+  for(let i=1;i<n;i++) for(let j=0;j<i;j++) dp[i]+=dp[j]*dp[i-1-j];
+  return dp[n-1];
+}
+
+function buildParen(s,i,j){
+  if(i===j) return `A${i}`;
+  const k=s[i][j];
+  if(k==null) return `A${i}…A${j}`;
+  return `(${buildParen(s,i,k)} × ${buildParen(s,k+1,j)})`;
+}
+
+function getCandidates(dims,i,j,mode){
+  if(mode==="first") return [i];
+  if(mode==="middle") return [Math.floor((i+j)/2)];
+  if(mode==="greedy"){
+    let bestK=i, bestC=Infinity;
+    for(let k=i;k<j;k++){ const c=dims[i-1]*dims[k]*dims[j]; if(c<bestC){bestC=c;bestK=k;} }
+    return [bestK];
+  }
+  const r=[]; for(let k=i;k<j;k++) r.push(k); return r;
+}
+
+function runMode(dims,mode){
+  const n=dims.length-1;
+  const m=createMat(n,null), s=createMat(n,null);
+  let sp=0,sc=0,dw=0;
+  for(let i=1;i<=n;i++){m[i][i]=0;dw++;}
+  for(let L=2;L<=n;L++){
+    for(let i=1;i<=n-L+1;i++){
+      const j=i+L-1; sp++; m[i][j]=Infinity;
+      for(const k of getCandidates(dims,i,j,mode)){
+        sc++;
+        const q=m[i][k]+m[k+1][j]+dims[i-1]*dims[k]*dims[j];
+        if(q<m[i][j]){m[i][j]=q;s[i][j]=k;dw++;}
       }
+    }
+  }
+  return {n,m,s,cost:m[1][n],paren:buildParen(s,1,n),sp,sc,dw,catalan:catalan(n)};
+}
+
+function ltrCost(dims){
+  let rows=dims[0],inner=dims[1],total=0;
+  for(let idx=2;idx<dims.length;idx++){total+=rows*inner*dims[idx];inner=dims[idx];}
+  return total;
+}
+
+function parseDims(text){
+  const parts=text.split(",").map(s=>s.trim()).filter(Boolean);
+  if(parts.length<2) throw new Error("Enter at least 2 dimensions.");
+  const nums=parts.map(Number);
+  if(nums.some(x=>isNaN(x)||!isFinite(x)||x<=0||!Number.isInteger(x)))
+    throw new Error("All dimensions must be positive integers.");
+  if(nums.length>11) throw new Error("Maximum 10 matrices for clarity.");
+  return nums;
+}
+
+function generateSteps(dims,mode){
+  const n=dims.length-1;
+  app.n=n; app.dims=dims;
+  const m=createMat(n,null), s=createMat(n,null);
+  const steps=[];
+  const metrics={sp:0,sc:0,dw:0,curBest:null,cat:catalan(n)};
+
+  function snap(codeLine,phase,pointer,active,explanation,note=""){
+    return {
+      codeLine,phase,
+      m:cloneMat(m),s:cloneMat(s),
+      ptr:{i:pointer.i??null,j:pointer.j??null,k:pointer.k??null,L:pointer.L??null},
+      active:{cur:active.cur||null,cand:active.cand||null,deps:active.deps||[],fin:active.fin||[]},
+      explanation,note,
+      metrics:{...metrics},
+      paren:buildParen(s,1,n)
     };
+  }
 
-    const modeDescriptions = {
-      exhaustive: {
-        badge: "Exhaustive",
-        note: "Exhaustive mode checks every legal split k and guarantees the optimal answer.",
-        explanation: "This is the correct dynamic programming algorithm. It performs a complete search over all split points k for each subproblem."
-      },
-      first: {
-        badge: "First Split",
-        note: "First-split mode only checks k = i. It is faster in appearance, but it can miss the optimal answer.",
-        explanation: "This intentionally weak mode removes most of the search. It demonstrates that checking too few split points can produce a worse answer."
-      },
-      middle: {
-        badge: "Middle Split",
-        note: "Middle-split mode only checks the middle candidate. It is a restricted search strategy and is not guaranteed to be correct.",
-        explanation: "This mode simulates a heuristic search choice. It can be better than first-split on some inputs, but it still has no correctness guarantee."
-      },
-      greedy: {
-        badge: "Greedy",
-        note: "Greedy mode chooses the split with the cheapest immediate multiplication cost only. This can fail because local choices are not always globally optimal.",
-        explanation: "This is the counterexample mode for CLO-3. A locally attractive choice can produce a globally worse total cost."
-      }
-    };
+  steps.push(snap(1,"start",{},{},`Starting Matrix Chain Multiplication for ${n} matrices (${MODES[mode].badge} mode).`,MODES[mode].note));
+  steps.push(snap(2,"set-n",{},{},`n = ${n}. Brute force would need to evaluate ${metrics.cat} parenthesizations.`));
 
-    let app = {
-      dims: [],
-      n: 0,
-      steps: [],
-      currentStep: -1,
-      status: "idle",
-      timer: null,
-      speed: 1,
-      themeIndex: 0,
-      themes: ["", "theme-sunset", "theme-emerald"],
-      overviewOpen: true,
-      searchMode: "exhaustive",
-      summary: null,
-      growthMaxN: 9
-    };
+  for(let i=1;i<=n;i++){
+    m[i][i]=0; metrics.dw++;
+    steps.push(snap(4,"base",{i,j:i},{cur:[i,i],fin:[[i,i]]},`Base case: m[${i}][${i}] = 0. A single matrix has zero multiplication cost.`));
+  }
 
-    function cloneMatrix(matrix) {
-      return matrix.map(row => row.slice());
-    }
+  for(let L=2;L<=n;L++){
+    steps.push(snap(5,"diag",{L},{},`Now solving all chains of length L = ${L}.`));
+    for(let i=1;i<=n-L+1;i++){
+      const j=i+L-1; metrics.sp++;
+      steps.push(snap(7,"cell",{i,j,L},{cur:[i,j]},`Solving subproblem m[${i}][${j}] — matrices A${i}…A${j}.`));
+      m[i][j]=Infinity;
+      steps.push(snap(8,"inf",{i,j,L},{cur:[i,j]},`Initialize m[${i}][${j}] = ∞ before testing split candidates.`));
 
-    function escapeHtml(text) {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;");
-    }
+      const cands=getCandidates(dims,i,j,mode);
+      steps.push(snap(9,"cands",{i,j,L},{cur:[i,j]},
+        `Split candidates for m[${i}][${j}]: { ${cands.join(", ")} }`,
+        mode==="exhaustive"?"Exhaustive mode checks all legal k.":"Restricted mode — fewer candidates."));
 
-    function parseDims(text) {
-      const parts = text.split(",").map(s => s.trim()).filter(Boolean);
-      if (parts.length < 2) throw new Error("Please enter at least 2 dimensions.");
-      const nums = parts.map(Number);
-      if (nums.some(num => Number.isNaN(num) || !Number.isFinite(num))) throw new Error("All dimensions must be valid numbers.");
-      if (nums.some(num => num <= 0 || !Number.isInteger(num))) throw new Error("All dimensions must be positive integers.");
-      if (nums.length > 11) throw new Error("For a clear visualization, please use at most 10 matrices.");
-      return nums;
-    }
+      for(const k of cands){
+        metrics.sc++;
+        const left=m[i][k],right=m[k+1][j],mul=dims[i-1]*dims[k]*dims[j],q=left+right+mul;
+        steps.push(snap(11,"try",{i,j,k,L},
+          {cur:[i,j],cand:[i,j],deps:[[i,k],[k+1,j]]},
+          `k=${k}: q = m[${i}][${k}](${left}) + m[${k+1}][${j}](${right}) + ${dims[i-1]}×${dims[k]}×${dims[j]} = ${q}`,
+          mode==="greedy"?`Greedy: k=${k} has cheapest immediate term ${mul}.`:""));
 
-    function createEmptyMatrix(n, fill = null) {
-      return Array.from({ length: n + 1 }, () => Array.from({ length: n + 1 }, () => fill));
-    }
-
-    function estimateParenthesizations(n) {
-      if (n <= 1) return 1;
-      const catalanIndex = n - 1;
-      const dp = Array(catalanIndex + 1).fill(0);
-      dp[0] = 1;
-      for (let i = 1; i <= catalanIndex; i++) {
-        for (let j = 0; j < i; j++) dp[i] += dp[j] * dp[i - 1 - j];
-      }
-      return dp[catalanIndex];
-    }
-
-    function buildPartialParenthesization(s, i, j) {
-      if (i === j) return `A${i}`;
-      const k = s[i][j];
-      if (k == null) return `A${i}...A${j}`;
-      return `(${buildPartialParenthesization(s, i, k)} × ${buildPartialParenthesization(s, k + 1, j)})`;
-    }
-
-    function getModeCandidatesFromDims(dims, i, j, mode) {
-      if (mode === "first") return [i];
-      if (mode === "middle") return [Math.floor((i + j) / 2)];
-      if (mode === "greedy") {
-        let bestK = i;
-        let bestImmediate = Infinity;
-        for (let k = i; k <= j - 1; k++) {
-          const immediate = dims[i - 1] * dims[k] * dims[j];
-          if (immediate < bestImmediate) {
-            bestImmediate = immediate;
-            bestK = k;
-          }
-        }
-        return [bestK];
-      }
-      const arr = [];
-      for (let k = i; k <= j - 1; k++) arr.push(k);
-      return arr;
-    }
-
-    function getModeCandidates(i, j, mode) {
-      return getModeCandidatesFromDims(app.dims, i, j, mode);
-    }
-
-    function leftToRightCostFromDims(dims) {
-      let rows = dims[0];
-      let inner = dims[1];
-      let total = 0;
-      for (let idx = 2; idx < dims.length; idx++) {
-        const cols = dims[idx];
-        total += rows * inner * cols;
-        inner = cols;
-      }
-      return total;
-    }
-
-    function analyzeWithMode(dims, mode) {
-      const n = dims.length - 1;
-      const m = createEmptyMatrix(n, null);
-      const s = createEmptyMatrix(n, null);
-      let subproblems = 0;
-      let splitChecks = 0;
-      let dpWrites = 0;
-
-      for (let i = 1; i <= n; i++) {
-        m[i][i] = 0;
-        dpWrites++;
-      }
-
-      for (let L = 2; L <= n; L++) {
-        for (let i = 1; i <= n - L + 1; i++) {
-          const j = i + L - 1;
-          subproblems++;
-          m[i][j] = Infinity;
-
-          const candidates = getModeCandidatesFromDims(dims, i, j, mode);
-          for (const k of candidates) {
-            splitChecks++;
-            const q = m[i][k] + m[k + 1][j] + dims[i - 1] * dims[k] * dims[j];
-            if (q < m[i][j]) {
-              m[i][j] = q;
-              s[i][j] = k;
-              dpWrites++;
-            }
-          }
+        if(q<m[i][j]){
+          m[i][j]=q; s[i][j]=k; metrics.dw++; metrics.curBest=q;
+          steps.push(snap(12,"improve",{i,j,k,L},
+            {cur:[i,j],cand:[i,j],deps:[[i,k],[k+1,j]],fin:[[i,j]]},
+            `Improvement! m[${i}][${j}] = ${q}, s[${i}][${j}] = ${k}.`));
         }
       }
-
-      return {
-        n,
-        m,
-        s,
-        cost: m[1][n],
-        parenthesization: buildPartialParenthesization(s, 1, n),
-        subproblems,
-        splitChecks,
-        dpWrites,
-        bruteForceCount: estimateParenthesizations(n)
-      };
+      steps.push(snap(13,"fin",{i,j,k:s[i][j],L},{cur:[i,j],fin:[[i,j]]},
+        `Done with m[${i}][${j}] = ${m[i][j]}, split k = ${s[i][j]}.`));
     }
+  }
 
-    function createStep({ codeLine, phase, m, s, pointer = {}, active = {}, explanation, metrics, note = "" }) {
-      return {
-        codeLine,
-        phase,
-        m: cloneMatrix(m),
-        s: cloneMatrix(s),
-        pointer: {
-          i: pointer.i ?? null,
-          j: pointer.j ?? null,
-          k: pointer.k ?? null,
-          L: pointer.L ?? null
-        },
-        active: {
-          current: active.current || null,
-          candidate: active.candidate || null,
-          dependencies: active.dependencies || [],
-          finalized: active.finalized || []
-        },
-        explanation,
-        note,
-        metrics: { ...metrics },
-        parenthesization: app.n >= 1 ? buildPartialParenthesization(s, 1, app.n) : "—"
-      };
-    }
+  const exh=runMode(dims,"exhaustive");
+  const cur=runMode(dims,mode);
+  const ltr=ltrCost(dims);
+  app.summary={exh,cur,ltr,saved:ltr-exh.cost};
 
-    function generateSteps(dims, mode) {
-      const n = dims.length - 1;
-      app.n = n;
-      app.dims = dims;
+  const diff=cur.cost-exh.cost;
+  steps.push(snap(13,"done",{i:1,j:n,k:s[1][n],L:n},{fin:[[1,n]]},
+    `Complete. Cost = ${m[1][n]}. Parenthesization: ${buildParen(s,1,n)}`,
+    diff===0?"Matched the exhaustive optimum on this input.":`Worse than exhaustive by ${diff} scalar multiplications.`));
 
-      const m = createEmptyMatrix(n, null);
-      const s = createEmptyMatrix(n, null);
-      const steps = [];
-      const metrics = {
-        subproblems: 0,
-        splitChecks: 0,
-        dpWrites: 0,
-        currentBest: null,
-        bruteForceCount: estimateParenthesizations(n)
-      };
+  return steps;
+}
 
-      steps.push(createStep({
-        codeLine: 1,
-        phase: "start",
-        m, s,
-        explanation: `We start Matrix Chain Multiplication for ${n} matrices using ${modeDescriptions[mode].badge.toLowerCase()} search mode.`,
-        note: modeDescriptions[mode].explanation,
-        metrics
-      }));
+// ── rendering ─────────────────────────────────────────────────────────────────
+function cellClass(i,j,step,type){
+  if(j<i) return "empty";
+  if(i===j&&type==="m") return "base";
+  const {cur,cand,deps,fin}=step.active;
+  const eq=(p,a,b)=>p&&p[0]===a&&p[1]===b;
+  const inArr=(arr,a,b)=>arr.some(p=>p[0]===a&&p[1]===b);
+  if(eq(cand,i,j)) return "cand";
+  if(eq(cur,i,j)) return "act";
+  if(inArr(deps,i,j)) return "dep";
+  if(inArr(fin,i,j)) return "fin";
+  if(i===j&&type==="m") return "base";
+  return "nil";
+}
 
-      steps.push(createStep({
-        codeLine: 2,
-        phase: "set-n",
-        m, s,
-        explanation: `The number of matrices is n = ${n}. We will fill m[i][j] and s[i][j].`,
-        note: `Brute force would need to consider ${metrics.bruteForceCount} parenthesization cases.`,
-        metrics
-      }));
+const COLORS={
+  base:"rgba(104,211,145,0.18)",act:"rgba(99,179,237,0.22)",
+  cand:"rgba(246,173,85,0.22)",dep:"rgba(183,148,244,0.18)",
+  fin:"rgba(99,179,237,0.30)",nil:"rgba(255,255,255,0.015)",empty:"transparent"
+};
 
-      for (let i = 1; i <= n; i++) {
-        m[i][i] = 0;
-        metrics.dpWrites++;
-        steps.push(createStep({
-          codeLine: 4,
-          phase: "base-case",
-          m, s,
-          pointer: { i, j: i, L: 1 },
-          active: { current: [i, i], finalized: [[i, i]] },
-          explanation: `Base case: m[${i}][${i}] = 0 because one matrix needs no scalar multiplications.`,
-          metrics
-        }));
+function renderTable(table,type,step){
+  const n=app.n; if(!n) return "";
+  const cs=54, hs=60, w=hs+n*cs+2, h=hs+n*cs+2;
+  const hf="rgba(255,255,255,0.04)", bd="rgba(255,255,255,0.08)";
+  const tc="#e8edf5", mt="#7a8fa6";
+
+  let svg=`<svg class="dp-svg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">`;
+  svg+=`<rect width="${w}" height="${h}" rx="8" fill="transparent"/>`;
+  svg+=`<rect width="${hs}" height="${hs}" fill="${hf}" stroke="${bd}"/>`;
+
+  for(let j=1;j<=n;j++){
+    const x=hs+(j-1)*cs;
+    svg+=`<rect x="${x}" width="${cs}" height="${hs}" fill="${hf}" stroke="${bd}"/>`;
+    svg+=`<text x="${x+cs/2}" y="${hs/2+4}" text-anchor="middle" fill="${mt}" font-size="11" font-family="DM Mono,monospace">${j}</text>`;
+  }
+  for(let i=1;i<=n;i++){
+    const y=hs+(i-1)*cs;
+    svg+=`<rect y="${y}" width="${hs}" height="${cs}" fill="${hf}" stroke="${bd}"/>`;
+    svg+=`<text x="${hs/2}" y="${y+cs/2+4}" text-anchor="middle" fill="${mt}" font-size="11" font-family="DM Mono,monospace">${i}</text>`;
+    for(let j=1;j<=n;j++){
+      const x=hs+(j-1)*cs;
+      const cls=cellClass(i,j,step,type);
+      const fill=COLORS[cls]||COLORS.nil;
+      let val="";
+      if(j>=i){
+        const v=table[i][j];
+        if(v===null)val="—"; else if(v===Infinity)val="∞"; else val=String(v);
       }
-
-      for (let L = 2; L <= n; L++) {
-        steps.push(createStep({
-          codeLine: 5,
-          phase: "new-diagonal",
-          m, s,
-          pointer: { L },
-          explanation: `Now we solve all chains of length L = ${L}. This is the next diagonal above the main diagonal.`,
-          metrics
-        }));
-
-        for (let i = 1; i <= n - L + 1; i++) {
-          const j = i + L - 1;
-          metrics.subproblems++;
-
-          steps.push(createStep({
-            codeLine: 7,
-            phase: "select-cell",
-            m, s,
-            pointer: { i, j, L },
-            active: { current: [i, j] },
-            explanation: `We are solving subproblem m[${i}][${j}], meaning matrices A${i}...A${j}.`,
-            metrics
-          }));
-
-          m[i][j] = Infinity;
-          steps.push(createStep({
-            codeLine: 8,
-            phase: "init-infinity",
-            m, s,
-            pointer: { i, j, L },
-            active: { current: [i, j] },
-            explanation: `Initialize m[${i}][${j}] = ∞ before testing candidate split points.`,
-            metrics
-          }));
-
-          const candidates = getModeCandidates(i, j, mode);
-          steps.push(createStep({
-            codeLine: 9,
-            phase: "choose-candidates",
-            m, s,
-            pointer: { i, j, L },
-            active: { current: [i, j] },
-            explanation: `Search step: for range m[${i}][${j}], the allowed split candidates are { ${candidates.join(", ")} }.`,
-            note: mode === "exhaustive"
-              ? "Exhaustive search checks all legal split points k."
-              : "This restricted mode intentionally checks fewer candidates to show how weaker search can hurt correctness.",
-            metrics
-          }));
-
-          for (const k of candidates) {
-            metrics.splitChecks++;
-            const left = m[i][k];
-            const right = m[k + 1][j];
-            const multiplyCost = dims[i - 1] * dims[k] * dims[j];
-            const q = left + right + multiplyCost;
-
-            steps.push(createStep({
-              codeLine: 11,
-              phase: "try-split",
-              m, s,
-              pointer: { i, j, k, L },
-              active: { current: [i, j], candidate: [i, j], dependencies: [[i, k], [k + 1, j]] },
-              explanation: `Try split k = ${k}: q = m[${i}][${k}] + m[${k + 1}][${j}] + ${dims[i - 1]}×${dims[k]}×${dims[j]} = ${left} + ${right} + ${multiplyCost} = ${q}.`,
-              note: mode === "greedy"
-                ? `Greedy mode chose k = ${k} because its immediate multiplication term ${dims[i - 1]}×${dims[k]}×${dims[j]} = ${multiplyCost} looked cheapest locally.`
-                : "",
-              metrics: { ...metrics, currentBest: m[i][j] === Infinity ? null : m[i][j] }
-            }));
-
-            if (q < m[i][j]) {
-              m[i][j] = q;
-              s[i][j] = k;
-              metrics.dpWrites++;
-              metrics.currentBest = q;
-
-              steps.push(createStep({
-                codeLine: 12,
-                phase: "improve",
-                m, s,
-                pointer: { i, j, k, L },
-                active: { current: [i, j], candidate: [i, j], dependencies: [[i, k], [k + 1, j]], finalized: [[i, j]] },
-                explanation: `This candidate improves the best known answer. Update m[${i}][${j}] = ${q} and store s[${i}][${j}] = ${k}.`,
-                metrics
-              }));
-            }
-          }
-
-          steps.push(createStep({
-            codeLine: 13,
-            phase: "finalize-cell",
-            m, s,
-            pointer: { i, j, k: s[i][j], L },
-            active: { current: [i, j], finalized: [[i, j]] },
-            explanation: `Finished m[${i}][${j}]. Best cost = ${m[i][j]} with split k = ${s[i][j]}.`,
-            metrics
-          }));
-        }
-      }
-
-      const exhaustiveSummary = analyzeWithMode(dims, "exhaustive");
-      const currentSummary = analyzeWithMode(dims, mode);
-      const ltrCost = leftToRightCostFromDims(dims);
-
-      steps.push(createStep({
-        codeLine: 13,
-        phase: "done",
-        m, s,
-        pointer: { i: 1, j: n, k: s[1][n], L: n },
-        active: { finalized: [[1, n]] },
-        explanation: `Algorithm complete. This mode produced total cost ${m[1][n]} with parenthesization ${buildPartialParenthesization(s, 1, n)}.`,
-        note: currentSummary.cost === exhaustiveSummary.cost
-          ? "This mode matched the exhaustive optimum on this input."
-          : `This mode is worse than exhaustive DP by ${currentSummary.cost - exhaustiveSummary.cost} scalar multiplications on this input.`,
-        metrics
-      }));
-
-      app.summary = {
-        exhaustive: exhaustiveSummary,
-        current: currentSummary,
-        leftToRightCost: ltrCost,
-        costSaved: ltrCost - exhaustiveSummary.cost
-      };
-
-      return steps;
+      svg+=`<rect x="${x}" y="${y}" width="${cs}" height="${cs}" rx="4" fill="${fill}" stroke="${bd}"/>`;
+      if(j>=i) svg+=`<text x="${x+cs/2}" y="${y+cs/2+5}" text-anchor="middle" fill="${tc}" font-size="${val.length>5?9:12}" font-family="DM Mono,monospace" font-weight="${["act","cand","fin"].includes(cls)?"600":"400"}">${esc(val)}</text>`;
     }
-
-    function renderWorkedExample() {
-      const ex = workedExamples.classic;
-
-      workedExampleBox.innerHTML =
-        `<h3>${ex.title}</h3>
-         <p><strong>Input:</strong> ${ex.dims}</p>
-         <ol>${ex.lines.map(line => `<li>${escapeHtml(line)}</li>`).join("")}</ol>`;
-
-      keyConceptsBox.innerHTML =
-        `<h3>Key Concepts</h3>
-         <ul>
-           <li><strong>Optimal substructure:</strong> the best full solution uses best subproblem solutions.</li>
-           <li><strong>Overlapping subproblems:</strong> the same ranges appear repeatedly, so storing them helps.</li>
-           <li><strong>Diagonal filling:</strong> shorter chains must be solved before longer chains.</li>
-           <li><strong>Search over k:</strong> every subproblem must consider candidate split points.</li>
-         </ul>`;
-
-      mistakesBox.innerHTML =
-        `<h3>Common Mistakes</h3>
-         <ul>
-           <li>Confusing the dimensions array p with the actual matrices A1...An.</li>
-           <li>Using the wrong indices in the cost formula p[i-1] × p[k] × p[j].</li>
-           <li>Assuming left-to-right multiplication is always optimal.</li>
-           <li>Assuming a greedy local split always gives the global optimum.</li>
-         </ul>`;
-
-      clo2Box.innerHTML =
-        `<h3>CLO-2: Role of Searching</h3>
-         <ul>
-           <li>This problem does <strong>not</strong> use sorting. Instead, it uses <strong>search</strong> over valid split points k.</li>
-           <li>For each range m[i][j], exhaustive mode checks every k from i to j-1.</li>
-           <li>The modes <strong>First</strong>, <strong>Middle</strong>, and <strong>Greedy</strong> deliberately remove or weaken that search.</li>
-           <li>If the answer becomes worse after restricting the search, that proves the search step matters.</li>
-         </ul>`;
-
-      counterexampleBox.innerHTML =
-        `<h3>CLO-3 Counterexample</h3>
-         <ul>
-           <li>Use the preset <strong>Greedy Trap</strong>: 40,20,30,10,30.</li>
-           <li>Then compare <strong>Exhaustive</strong> vs <strong>Greedy</strong>.</li>
-           <li>The greedy strategy makes locally cheap-looking choices, but the final cost can be worse.</li>
-           <li>This demonstrates why dynamic programming is the correct paradigm here, while a naive greedy idea can fail.</li>
-         </ul>`;
-
-      worstCaseBox.innerHTML =
-        `<h3>Worst-Case / Stress Demonstration</h3>
-         <ul>
-           <li>Use the preset <strong>Worst-Case Size</strong> to stress the visualization with many matrices.</li>
-           <li>As n grows, exhaustive DP split checks grow roughly cubically, while brute-force parenthesizations grow much faster.</li>
-           <li>The chart below visualizes this gap.</li>
-           <li>This directly supports the asymptotic analysis requirement.</li>
-         </ul>`;
-
-      comparisonExplainBox.innerHTML =
-        `<h3>How to use the tool as for beginners</h3>
-         <p>
-           Start with <strong>Classic + Exhaustive</strong> to show the correct dynamic programming solution. Then switch to
-           <strong>First</strong>, <strong>Middle</strong>, or <strong>Greedy</strong> mode on the same input and compare the final cost.
-           Finally, show the growth chart to explain why exhaustive dynamic programming is still far better than brute force,
-           even though it searches all split points.
-         </p>`;
-    }
-
-    function renderPseudocode(activeLine) {
-      pseudocodeBox.innerHTML = "";
-      pseudocodeLines.forEach((line, index) => {
-        const row = document.createElement("div");
-        row.className = "code-line" + (index + 1 === activeLine ? " active" : "");
-        row.title = line.tip;
-        row.innerHTML = `<span class="code-number">${index + 1}</span><span>${escapeHtml(line.text)}</span>`;
-        pseudocodeBox.appendChild(row);
-      });
-
-      const activeEl = pseudocodeBox.querySelector(".code-line.active");
-      if (activeEl) {
-        const containerTop = pseudocodeBox.scrollTop;
-        const containerBottom = containerTop + pseudocodeBox.clientHeight;
-        const elTop = activeEl.offsetTop;
-        const elBottom = elTop + activeEl.offsetHeight;
-
-        if (elTop < containerTop) {
-          pseudocodeBox.scrollTo({ top: elTop - 10, behavior: "smooth" });
-        } else if (elBottom > containerBottom) {
-          pseudocodeBox.scrollTo({ top: elBottom - pseudocodeBox.clientHeight + 10, behavior: "smooth" });
-        }
-      }
-    }
-
-    function getCellClass(i, j, step, tableType) {
-      if (j < i) return "svg-cell-empty";
-      if (i === j && tableType === "m") return "svg-cell-base";
-
-      const current = step.active.current;
-      const candidate = step.active.candidate;
-      const deps = step.active.dependencies || [];
-      const finalized = step.active.finalized || [];
-
-      const isSame = (pair, a, b) => pair && pair[0] === a && pair[1] === b;
-      const inPairs = (pairs, a, b) => pairs.some(pair => pair[0] === a && pair[1] === b);
-
-      if (isSame(candidate, i, j)) return "svg-cell-candidate";
-      if (isSame(current, i, j)) return "svg-cell-active";
-      if (inPairs(deps, i, j)) return "svg-cell-dependency";
-      if (inPairs(finalized, i, j)) return "svg-cell-finalized";
-      if (i === j && tableType === "m") return "svg-cell-base";
-      return "svg-cell-empty";
-    }
-
-    function colorVar(className) {
-      const styles = getComputedStyle(document.body);
-      const map = {
-        "svg-cell-base": styles.getPropertyValue("--base").trim(),
-        "svg-cell-active": styles.getPropertyValue("--active").trim(),
-        "svg-cell-candidate": styles.getPropertyValue("--candidate").trim(),
-        "svg-cell-dependency": styles.getPropertyValue("--dependency").trim(),
-        "svg-cell-finalized": styles.getPropertyValue("--finalized").trim(),
-        "svg-cell-empty": "rgba(255,255,255,0.015)"
-      };
-      return map[className] || "rgba(255,255,255,0.015)";
-    }
-
-    function renderSvgTable(table, type, step) {
-      const n = app.n;
-      if (!n) return "";
-
-      const cell = 64;
-      const head = 72;
-      const width = head + n * cell + 2;
-      const height = head + n * cell + 2;
-      const border = "rgba(255,255,255,0.10)";
-      const headFill = "rgba(255,255,255,0.045)";
-      const text = getComputedStyle(document.body).getPropertyValue("--text").trim();
-      const muted = getComputedStyle(document.body).getPropertyValue("--muted").trim();
-
-      let svg = `<svg class="dp-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" aria-label="${type} table">`;
-      svg += `<rect x="0" y="0" width="${width}" height="${height}" rx="14" fill="transparent"/>`;
-      svg += `<rect x="0" y="0" width="${head}" height="${head}" fill="${headFill}" stroke="${border}"/>`;
-
-      for (let j = 1; j <= n; j++) {
-        const x = head + (j - 1) * cell;
-        svg += `<rect x="${x}" y="0" width="${cell}" height="${head}" fill="${headFill}" stroke="${border}"/>`;
-        svg += `<text x="${x + cell / 2}" y="${head / 2 + 5}" text-anchor="middle" fill="${muted}" font-size="13" font-weight="700">${type}[·][${j}]</text>`;
-      }
-
-      for (let i = 1; i <= n; i++) {
-        const y = head + (i - 1) * cell;
-        svg += `<rect x="0" y="${y}" width="${head}" height="${cell}" fill="${headFill}" stroke="${border}"/>`;
-        svg += `<text x="${head / 2}" y="${y + cell / 2 + 5}" text-anchor="middle" fill="${muted}" font-size="13" font-weight="700">${type}[${i}][·]</text>`;
-
-        for (let j = 1; j <= n; j++) {
-          const x = head + (j - 1) * cell;
-          const className = getCellClass(i, j, step, type);
-          const fill = colorVar(className);
-
-          let value = "";
-          if (j >= i) {
-            const raw = table[i][j];
-            if (raw === null) value = "—";
-            else if (raw === Infinity) value = "∞";
-            else value = String(raw);
-          }
-
-          svg += `<rect class="svg-cell ${className}" x="${x}" y="${y}" width="${cell}" height="${cell}" rx="6" fill="${fill}" stroke="${border}"/>`;
-          svg += `<text x="${x + cell / 2}" y="${y + cell / 2 + 6}" text-anchor="middle" fill="${text}" font-size="16" font-weight="${className === 'svg-cell-active' || className === 'svg-cell-candidate' || className === 'svg-cell-finalized' ? '700' : '500'}">${escapeHtml(value)}</text>`;
-        }
-      }
-
-      svg += `</svg>`;
-      return svg;
-    }
-
-    function renderHistory() {
-      historyList.innerHTML = "";
-
-      if (!app.steps.length) {
-        historyList.innerHTML = `<div class="history-empty">No steps yet.</div>`;
-        return;
-      }
-
-      const start = Math.max(0, app.currentStep - 24);
-      const end = app.currentStep >= 0 ? app.currentStep : 0;
-      const visible = app.steps.slice(start, end + 1);
-
-      const table = document.createElement("table");
-      table.className = "history-table";
-      table.innerHTML = `<thead><tr><th>Step</th><th>Phase</th><th>Range</th><th>k</th><th>Summary</th></tr></thead><tbody></tbody>`;
-
-      const tbody = table.querySelector("tbody");
-
-      visible.forEach((step, idx) => {
-        const realIndex = start + idx;
-        const tr = document.createElement("tr");
-        if (realIndex === app.currentStep) tr.classList.add("active-history-row");
-
-        const range = step.pointer.i && step.pointer.j ? `m[${step.pointer.i}][${step.pointer.j}]` : "—";
-        const k = step.pointer.k ?? "—";
-
-        tr.innerHTML = `<td>${realIndex + 1}</td><td>${escapeHtml(step.phase)}</td><td>${range}</td><td>${k}</td><td>${escapeHtml(step.explanation)}</td>`;
-        tr.addEventListener("click", () => {
-          goToStep(realIndex);
-          if (app.status === "playing") stopPlayback("paused");
-        });
-        tbody.appendChild(tr);
-      });
-
-      historyList.appendChild(table);
-    }
-
-    function setStatus(status) {
-      app.status = status;
-      statusText.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-      statusText.className = "status " + status;
-    }
-
-    function updateControls() {
-      const hasSteps = app.steps.length > 0;
-      stepBtn.disabled = !hasSteps;
-      playBtn.disabled = !hasSteps;
-      pauseBtn.disabled = !hasSteps || app.status !== "playing";
-    }
-
-    function updateProgress() {
-      if (!app.steps.length || app.currentStep < 0) {
-        progressFill.style.width = "0%";
-        progressLabel.textContent = "0%";
-        return;
-      }
-      const percent = Math.round(((app.currentStep + 1) / app.steps.length) * 100);
-      progressFill.style.width = percent + "%";
-      progressLabel.textContent = percent + "%";
-    }
-
-    function renderPointers(step) {
-      const { i, j, k } = step.pointer;
-      pointerI.textContent = i ?? "—";
-      pointerJ.textContent = j ?? "—";
-      pointerK.textContent = k ?? "—";
-    }
-
-    function animatePanels() {
-      [costSvgWrap, splitSvgWrap, explanationText, historyList, growthChartWrap].forEach(el => {
-        el.classList.remove("flash-update");
-        void el.offsetWidth;
-        el.classList.add("flash-update");
-      });
-    }
-
-    function getModeComparisonText() {
-      if (!app.summary) return "Build steps to compare the selected search mode.";
-      const currentCost = app.summary.current.cost;
-      const optimalCost = app.summary.exhaustive.cost;
-
-      if (app.searchMode === "exhaustive") {
-        return "This is the guaranteed optimal dynamic programming result.";
-      }
-      if (currentCost === optimalCost) {
-        return "This restricted mode happened to match the optimal answer on this input.";
-      }
-      return `This mode is worse than exhaustive by ${currentCost - optimalCost} scalar multiplications.`;
-    }
-
-    function updateComparisonStats() {
-      if (!app.summary) {
-        optimalCostBox.textContent = "—";
-        ltrCostBox.textContent = "—";
-        savedCostBox.textContent = "—";
-        bruteForceCountBox.textContent = "—";
-        compareDpCost.textContent = "—";
-        compareModeCost.textContent = "—";
-        compareLtrCost.textContent = "—";
-        compareModeText.textContent = "Build steps to compare the selected search mode.";
-        return;
-      }
-
-      optimalCostBox.textContent = app.summary.exhaustive.cost;
-      ltrCostBox.textContent = app.summary.leftToRightCost;
-      savedCostBox.textContent = app.summary.costSaved;
-      bruteForceCountBox.textContent = app.summary.exhaustive.bruteForceCount;
-
-      compareDpCost.textContent = app.summary.exhaustive.cost;
-      compareModeCost.textContent = app.summary.current.cost;
-      compareLtrCost.textContent = app.summary.leftToRightCost;
-      compareModeText.textContent = getModeComparisonText();
-    }
-
-    function normalizeSeries(values) {
-      const maxVal = Math.max(...values, 1);
-      return values.map(v => v / maxVal);
-    }
-
-    function updateGrowthRangeUi() {
-      growthRangeValue.textContent = `2 to ${app.growthMaxN} matrices`;
-      growthRangeSlider.value = String(app.growthMaxN);
-    }
-
-    function renderGrowthChart() {
-      const nMax = app.growthMaxN || 9;
-      const ns = [];
-      const actualChecks = [];
-      const cubicCurve = [];
-      const catalanCurve = [];
-
-      for (let n = 2; n <= nMax; n++) {
-        ns.push(n);
-        const dims = Array.from({ length: n + 1 }, (_, idx) => idx + 2);
-        const summary = analyzeWithMode(dims, "exhaustive");
-        actualChecks.push(summary.splitChecks);
-        cubicCurve.push(n * n * n);
-        catalanCurve.push(estimateParenthesizations(n));
-      }
-
-      const aNorm = normalizeSeries(actualChecks);
-      const cNorm = normalizeSeries(cubicCurve);
-      const catNorm = normalizeSeries(catalanCurve);
-
-      const width = 980;
-      const height = 380;
-      const left = 58;
-      const right = 24;
-      const top = 26;
-      const bottom = 48;
-      const plotW = width - left - right;
-      const plotH = height - top - bottom;
-
-      const text = getComputedStyle(document.body).getPropertyValue("--text").trim();
-      const muted = getComputedStyle(document.body).getPropertyValue("--muted").trim();
-      const accent = getComputedStyle(document.body).getPropertyValue("--accent").trim();
-      const accent2 = getComputedStyle(document.body).getPropertyValue("--accent-2").trim();
-      const accent3 = getComputedStyle(document.body).getPropertyValue("--accent-3").trim();
-      const border = "rgba(255,255,255,0.10)";
-      const grid = "rgba(255,255,255,0.08)";
-
-      function pointX(index) {
-        if (ns.length === 1) return left + plotW / 2;
-        return left + (index / (ns.length - 1)) * plotW;
-      }
-
-      function pointY(normVal) {
-        return top + (1 - normVal) * plotH;
-      }
-
-      function pathFor(series) {
-        return series.map((v, i) => `${i === 0 ? "M" : "L"} ${pointX(i)} ${pointY(v)}`).join(" ");
-      }
-
-      let svg = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" aria-label="Growth chart">`;
-      svg += `<rect x="0" y="0" width="${width}" height="${height}" rx="16" fill="transparent"/>`;
-
-      for (let line = 0; line <= 4; line++) {
-        const y = top + (plotH / 4) * line;
-        svg += `<line x1="${left}" y1="${y}" x2="${width - right}" y2="${y}" stroke="${grid}" stroke-width="1"/>`;
-      }
-
-      svg += `<line x1="${left}" y1="${top}" x2="${left}" y2="${top + plotH}" stroke="${border}" stroke-width="1.5"/>`;
-      svg += `<line x1="${left}" y1="${top + plotH}" x2="${width - right}" y2="${top + plotH}" stroke="${border}" stroke-width="1.5"/>`;
-
-      ns.forEach((n, i) => {
-        const x = pointX(i);
-        svg += `<line x1="${x}" y1="${top + plotH}" x2="${x}" y2="${top + plotH + 6}" stroke="${border}" stroke-width="1"/>`;
-        svg += `<text x="${x}" y="${height - 18}" text-anchor="middle" fill="${muted}" font-size="12">n=${n}</text>`;
-      });
-
-      svg += `<text x="${left + plotW / 2}" y="${height - 4}" text-anchor="middle" fill="${muted}" font-size="12">Number of matrices</text>`;
-      svg += `<text x="18" y="${top + plotH / 2}" transform="rotate(-90 18 ${top + plotH / 2})" text-anchor="middle" fill="${muted}" font-size="12">Normalized growth</text>`;
-
-      svg += `<path d="${pathFor(aNorm)}" fill="none" stroke="${accent}" stroke-width="3"/>`;
-      svg += `<path d="${pathFor(cNorm)}" fill="none" stroke="${accent2}" stroke-width="3"/>`;
-      svg += `<path d="${pathFor(catNorm)}" fill="none" stroke="${accent3}" stroke-width="3"/>`;
-
-      [
-        { series: aNorm, color: accent },
-        { series: cNorm, color: accent2 },
-        { series: catNorm, color: accent3 }
-      ].forEach(({ series, color }) => {
-        series.forEach((v, i) => {
-          svg += `<circle cx="${pointX(i)}" cy="${pointY(v)}" r="4.5" fill="${color}"/>`;
-        });
-      });
-
-      const legendX = left + 12;
-      const legendY = top + 8;
-      const legendItems = [
-        { color: accent, text: "Actual DP split checks" },
-        { color: accent2, text: "Theoretical n³" },
-        { color: accent3, text: "Brute force Catalan growth" }
-      ];
-
-      legendItems.forEach((item, idx) => {
-        const y = legendY + idx * 22;
-        svg += `<line x1="${legendX}" y1="${y}" x2="${legendX + 26}" y2="${y}" stroke="${item.color}" stroke-width="3"/>`;
-        svg += `<text x="${legendX + 34}" y="${y + 4}" fill="${text}" font-size="13">${item.text}</text>`;
-      });
-
-      svg += `</svg>`;
-      growthChartWrap.innerHTML = svg;
-    }
-
-    function renderStep() {
-      if (!app.steps.length || app.currentStep < 0) {
-        costSvgWrap.innerHTML = "";
-        splitSvgWrap.innerHTML = "";
-        explanationText.innerHTML = `Press <strong>Build Steps</strong> to generate the dynamic programming trace.`;
-        renderPseudocode(-1);
-        renderHistory();
-        stepCounter.textContent = `0 / ${app.steps.length || 0}`;
-        subproblemsCount.textContent = "0";
-        splitChecksCount.textContent = "0";
-        dpWritesCount.textContent = "0";
-        currentBestCost.textContent = "—";
-        currentRange.textContent = "—";
-        currentSplit.textContent = "—";
-        currentLength.textContent = "—";
-        parenthesizationText.textContent = "—";
-        pointerI.textContent = "—";
-        pointerJ.textContent = "—";
-        pointerK.textContent = "—";
-        updateProgress();
-        updateComparisonStats();
-        renderGrowthChart();
-        return;
-      }
-
-      const step = app.steps[app.currentStep];
-
-      costSvgWrap.innerHTML = renderSvgTable(step.m, "m", step);
-      splitSvgWrap.innerHTML = renderSvgTable(step.s, "s", step);
-
-      explanationText.innerHTML = step.note
-        ? `${escapeHtml(step.explanation)}<br><br><span style="color:var(--soft)">${escapeHtml(step.note)}</span>`
-        : escapeHtml(step.explanation);
-
-      renderPseudocode(step.codeLine);
-      renderHistory();
-
-      stepCounter.textContent = `${app.currentStep + 1} / ${app.steps.length}`;
-      subproblemsCount.textContent = step.metrics.subproblems;
-      splitChecksCount.textContent = step.metrics.splitChecks;
-      dpWritesCount.textContent = step.metrics.dpWrites;
-      currentBestCost.textContent = step.metrics.currentBest == null || step.metrics.currentBest === Infinity ? "—" : step.metrics.currentBest;
-
-      const { i, j, k, L } = step.pointer;
-      currentRange.textContent = i && j ? `m[${i}][${j}]` : "—";
-      currentSplit.textContent = k ? `k = ${k}` : "—";
-      currentLength.textContent = L ? `L = ${L}` : "—";
-      parenthesizationText.textContent = step.parenthesization;
-
-      renderPointers(step);
-      updateProgress();
-      updateControls();
-      updateComparisonStats();
-      renderGrowthChart();
-      animatePanels();
-    }
-
-    function goToStep(index) {
-      app.currentStep = Math.max(0, Math.min(index, app.steps.length - 1));
-      renderStep();
-    }
-
-    function nextStep() {
-      if (!app.steps.length) return;
-      if (app.currentStep < app.steps.length - 1) {
-        app.currentStep++;
-        renderStep();
-        if (app.currentStep === app.steps.length - 1) stopPlayback("done");
-      } else {
-        stopPlayback("done");
-      }
-    }
-
-    function getDelay() {
-      return Math.max(120, 900 / app.speed);
-    }
-
-    function playLoop() {
-      if (app.status !== "playing") return;
-      nextStep();
-      if (app.status === "playing") app.timer = setTimeout(playLoop, getDelay());
-    }
-
-    function startPlayback() {
-      if (!app.steps.length) return;
-      if (app.currentStep >= app.steps.length - 1) app.currentStep = -1;
-      setStatus("playing");
-      updateControls();
-      clearTimeout(app.timer);
-      app.timer = setTimeout(playLoop, getDelay());
-    }
-
-    function stopPlayback(newStatus = "paused") {
-      clearTimeout(app.timer);
-      app.timer = null;
-      setStatus(newStatus);
-      updateControls();
-    }
-
-    function updateModeUi() {
-      const data = modeDescriptions[app.searchMode];
-      modeBadge.textContent = data.badge;
-      modeNote.textContent = data.note;
-    }
-
-    function buildAllSteps() {
-      try {
-        stopPlayback("idle");
-        const dims = parseDims(dimsInput.value);
-        app.dims = dims;
-        app.searchMode = searchModeSelect.value;
-        updateModeUi();
-
-        app.steps = generateSteps(dims, app.searchMode);
-        app.currentStep = -1;
-        setStatus("ready");
-
-        stepCounter.textContent = `0 / ${app.steps.length}`;
-        subproblemsCount.textContent = "0";
-        splitChecksCount.textContent = "0";
-        dpWritesCount.textContent = "0";
-        currentBestCost.textContent = "—";
-        currentRange.textContent = "—";
-        currentSplit.textContent = "—";
-        currentLength.textContent = "—";
-        parenthesizationText.textContent = "—";
-        pointerI.textContent = "—";
-        pointerJ.textContent = "—";
-        pointerK.textContent = "—";
-
-        explanationText.innerHTML = `Steps are ready. Press <strong>Step</strong> to begin, or press <strong>Play</strong> to start the animation.`;
-        costSvgWrap.innerHTML = "";
-        splitSvgWrap.innerHTML = "";
-
-        renderPseudocode(-1);
-        renderHistory();
-        updateProgress();
-        updateControls();
-        updateComparisonStats();
-        renderGrowthChart();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    function resetApp() {
-      clearTimeout(app.timer);
-      app.timer = null;
-      app.steps = [];
-      app.currentStep = -1;
-      app.n = 0;
-      app.summary = null;
-      setStatus("idle");
-      renderStep();
-      updateControls();
-    }
-
-    function applyTheme() {
-      document.body.classList.remove("theme-sunset", "theme-emerald");
-      const theme = app.themes[app.themeIndex];
-      if (theme) document.body.classList.add(theme);
-      renderGrowthChart();
-      if (app.currentStep >= 0 && app.steps.length) renderStep();
-    }
-
-    function cycleTheme() {
-      app.themeIndex = (app.themeIndex + 1) % app.themes.length;
-      applyTheme();
-    }
-
-    function exportSummary() {
-      if (!app.steps.length || !app.summary) {
-        alert("Build the steps first.");
-        return;
-      }
-
-      const last = app.steps[app.steps.length - 1];
-      const text =
-`Matrix Chain Multiplication Summary
-
-Dimensions: ${app.dims.join(", ")}
-Matrices: ${app.n}
-Search Mode: ${app.searchMode}
-Current Mode Cost: ${app.summary.current.cost}
-Optimal DP Cost: ${app.summary.exhaustive.cost}
-Left-to-Right Cost: ${app.summary.leftToRightCost}
-Scalar Multiplications Saved vs Left-to-Right: ${app.summary.costSaved}
-Current Parenthesization: ${last.parenthesization}
-Optimal Parenthesization: ${app.summary.exhaustive.parenthesization}
-Total Steps: ${app.steps.length}
-Subproblems: ${app.summary.current.subproblems}
-Split Checks: ${app.summary.current.splitChecks}
-DP Writes: ${app.summary.current.dpWrites}
-Brute Force Parenthesizations: ${app.summary.exhaustive.bruteForceCount}
-
-Mode Explanation:
-${modeDescriptions[app.searchMode].explanation}
-
-Comparison Result:
-${getModeComparisonText()}
-`;
-
-      const blob = new Blob([text], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "matrix-chain-summary.txt";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function setOverview(open) {
-      app.overviewOpen = open;
-      overviewBody.hidden = !open;
-      overviewToggle.textContent = open ? "Hide Overview" : "Show Overview";
-      overviewToggle.setAttribute("aria-expanded", String(open));
-    }
-
-    buildBtn.addEventListener("click", buildAllSteps);
-
-    stepBtn.addEventListener("click", () => {
-      if (!app.steps.length) return;
-      if (app.status === "playing") stopPlayback("paused");
-
-      if (app.currentStep < app.steps.length - 1) {
-        setStatus("ready");
-        nextStep();
-        if (app.currentStep < app.steps.length - 1) setStatus("ready");
-      } else {
-        setStatus("done");
-      }
-
-      updateControls();
-    });
-
-    playBtn.addEventListener("click", startPlayback);
-    pauseBtn.addEventListener("click", () => stopPlayback("paused"));
-    resetBtn.addEventListener("click", resetApp);
-
-    speedSlider.addEventListener("input", () => {
-      app.speed = Number(speedSlider.value);
-      speedValue.textContent = `${app.speed.toFixed(2)}x`;
-      if (app.status === "playing") {
-        clearTimeout(app.timer);
-        app.timer = setTimeout(playLoop, getDelay());
-      }
-    });
-
-    searchModeSelect.addEventListener("change", () => {
-      app.searchMode = searchModeSelect.value;
-      updateModeUi();
-      if (app.steps.length) buildAllSteps();
-    });
-
-    growthRangeSlider.addEventListener("input", () => {
-      app.growthMaxN = Number(growthRangeSlider.value);
-      updateGrowthRangeUi();
-      renderGrowthChart();
-    });
-
-    document.querySelectorAll("[data-preset]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        dimsInput.value = btn.dataset.preset;
-      });
-    });
-
-    themeBtn.addEventListener("click", cycleTheme);
-    exportBtn.addEventListener("click", exportSummary);
-    overviewToggle.addEventListener("click", () => setOverview(!app.overviewOpen));
-
-    document.addEventListener("keydown", event => {
-      const tag = document.activeElement?.tagName?.toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select") return;
-
-      if (event.code === "Space") {
-        event.preventDefault();
-        if (app.status === "playing") stopPlayback("paused");
-        else startPlayback();
-      }
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        stepBtn.click();
-      }
-
-      if (event.key.toLowerCase() === "r") {
-        resetBtn.click();
-      }
-    });
-
-    renderWorkedExample();
-    renderPseudocode(-1);
-    updateModeUi();
-    updateGrowthRangeUi();
-    applyTheme();
-    setOverview(true);
-    renderGrowthChart();
-    resetApp();
-  </script>
+  }
+  svg+=`</svg>`;
+  return svg;
+}
+
+function renderPseudo(active){
+  pseudoBox.innerHTML="";
+  PSEUDOCODE.forEach(([text,tip],i)=>{
+    const div=document.createElement("div");
+    div.className="code-line"+(i+1===active?" active":"");
+    div.title=tip;
+    div.innerHTML=`<span class="ln">${i+1}</span><span>${esc(text)}</span>`;
+    pseudoBox.appendChild(div);
+  });
+}
+
+function renderHistory(){
+  histList.innerHTML="";
+  if(!app.steps.length){
+    histList.innerHTML=`<div class="empty" style="padding:12px 14px">No steps yet.</div>`;
+    return;
+  }
+  const start=Math.max(0,app.cur-29);
+  const end=app.cur>=0?app.cur:0;
+  const slice=app.steps.slice(start,end+1);
+
+  const tbl=document.createElement("table");
+  tbl.className="hist";
+  tbl.innerHTML=`<thead><tr><th>#</th><th>Phase</th><th>Range</th><th>k</th><th>Explanation</th></tr></thead><tbody></tbody>`;
+  const tb=tbl.querySelector("tbody");
+
+  slice.forEach((st,idx)=>{
+    const ri=start+idx;
+    const tr=document.createElement("tr");
+    if(ri===app.cur) tr.classList.add("hl");
+    const range=st.ptr.i&&st.ptr.j?`m[${st.ptr.i}][${st.ptr.j}]`:"—";
+    tr.innerHTML=`<td>${ri+1}</td><td>${esc(st.phase)}</td><td>${range}</td><td>${st.ptr.k??'—'}</td><td>${esc(st.explanation)}</td>`;
+    tr.addEventListener("click",()=>{ goTo(ri); if(app.status==="playing")stop("paused"); });
+    tb.appendChild(tr);
+  });
+  histList.appendChild(tbl);
+}
+
+function renderGrowth(){
+  const nMax=app.growthMax;
+  const ns=[], actual=[], cubic=[], cat=[];
+  for(let n=2;n<=nMax;n++){
+    ns.push(n);
+    const dims=Array.from({length:n+1},(_,i)=>i+2);
+    const res=runMode(dims,"exhaustive");
+    actual.push(res.sc); cubic.push(n**3); cat.push(catalan(n));
+  }
+  const norm=arr=>{ const mx=Math.max(...arr,1); return arr.map(v=>v/mx); };
+  const an=norm(actual),cn=norm(cubic),catn=norm(cat);
+
+  const W=760,H=280,L=50,R=20,T=24,B=44,PW=W-L-R,PH=H-T-B;
+  const px=i=>L+(ns.length<2?PW/2:(i/(ns.length-1))*PW);
+  const py=v=>T+(1-v)*PH;
+  const path=arr=>arr.map((v,i)=>`${i===0?"M":"L"}${px(i)},${py(v)}`).join(" ");
+
+  const tc="#e8edf5",mt="#7a8fa6",gr="rgba(255,255,255,0.07)";
+  const col1="#63b3ed",col2="#b794f4",col3="#f6ad55";
+
+  let svg=`<svg class="chart-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  for(let g=0;g<=4;g++){
+    const y=T+(PH/4)*g;
+    svg+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="${gr}"/>`;
+  }
+  svg+=`<line x1="${L}" y1="${T}" x2="${L}" y2="${T+PH}" stroke="${gr}" stroke-width="1.5"/>`;
+  svg+=`<line x1="${L}" y1="${T+PH}" x2="${W-R}" y2="${T+PH}" stroke="${gr}" stroke-width="1.5"/>`;
+  ns.forEach((n,i)=>{
+    const x=px(i);
+    svg+=`<text x="${x}" y="${H-8}" text-anchor="middle" fill="${mt}" font-size="11" font-family="DM Mono,monospace">n=${n}</text>`;
+  });
+  svg+=`<path d="${path(an)}" fill="none" stroke="${col1}" stroke-width="2.5"/>`;
+  svg+=`<path d="${path(cn)}" fill="none" stroke="${col2}" stroke-width="2.5"/>`;
+  svg+=`<path d="${path(catn)}" fill="none" stroke="${col3}" stroke-width="2.5"/>`;
+  [an,cn,catn].forEach((arr,ci)=>{
+    const c=[col1,col2,col3][ci];
+    arr.forEach((v,i)=>{ svg+=`<circle cx="${px(i)}" cy="${py(v)}" r="4" fill="${c}"/>`; });
+  });
+  [[col1,"DP split checks"],[col2,"Theoretical n³"],[col3,"Catalan brute force"]].forEach(([c,t],i)=>{
+    const lx=L+10, ly=T+10+i*20;
+    svg+=`<line x1="${lx}" y1="${ly}" x2="${lx+22}" y2="${ly}" stroke="${c}" stroke-width="2.5"/>`;
+    svg+=`<text x="${lx+30}" y="${ly+4}" fill="${tc}" font-size="12" font-family="DM Sans,sans-serif">${t}</text>`;
+  });
+  svg+=`</svg>`;
+  growthWrap.innerHTML=svg;
+}
+
+// ── state display ─────────────────────────────────────────────────────────────
+function setStatus(s){
+  app.status=s;
+  const cap=s.charAt(0).toUpperCase()+s.slice(1);
+  statusText.textContent=cap;
+  statusText.className=`stat-value accent status-${s}`;
+}
+
+function updateButtons(){
+  const has=app.steps.length>0;
+  stepBtn.disabled=!has;
+  playBtn.disabled=!has;
+  pauseBtn.disabled=!has||app.status!=="playing";
+}
+
+function updateProgress(){
+  if(!app.steps.length||app.cur<0){
+    progressFill.style.width="0%"; progressLabel.textContent="0%"; return;
+  }
+  const pct=Math.round(((app.cur+1)/app.steps.length)*100);
+  progressFill.style.width=pct+"%"; progressLabel.textContent=pct+"%";
+}
+
+function updateSummary(){
+  if(!app.summary){ cmpDp.textContent=cmpMode.textContent=cmpLtr.textContent="—"; cmpModeText.textContent="Build steps to compare."; return; }
+  cmpDp.textContent=app.summary.exh.cost;
+  cmpMode.textContent=app.summary.cur.cost;
+  cmpLtr.textContent=app.summary.ltr;
+  optCost.textContent=app.summary.exh.cost;
+  savedCost.textContent=app.summary.saved;
+  const diff=app.summary.cur.cost-app.summary.exh.cost;
+  if(app.mode==="exhaustive") cmpModeText.textContent="This is the guaranteed optimal result.";
+  else if(diff===0) cmpModeText.textContent="This mode matched the optimal on this input.";
+  else cmpModeText.textContent=`Worse than exhaustive by ${diff} scalar multiplications.`;
+}
+
+function flash(el){ el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+function softRefresh(...els){
+  els.filter(Boolean).forEach(el=>{
+    el.classList.remove("soft-refresh");
+    void el.offsetWidth;
+    el.classList.add("soft-refresh");
+  });
+}
+
+function renderStep(){
+  if(!app.steps.length||app.cur<0){
+    costWrap.innerHTML=""; splitWrap.innerHTML="";
+    explanText.innerHTML=`Press <strong>Build steps</strong> to generate the dynamic programming trace.`;
+    renderPseudo(-1); renderHistory();
+    stepCounter.textContent="0 / 0";
+    subproblems.textContent=splitChecks.textContent=dpWrites.textContent="0";
+    curBest.textContent=optCost.textContent=savedCost.textContent="—";
+    currentRange.textContent=currentSplit.textContent=currentLength.textContent="—";
+    pointerI.textContent=pointerJ.textContent=pointerK.textContent="—";
+    parentText.textContent="—"; updateProgress(); updateSummary(); renderGrowth(); return;
+  }
+
+  const st=app.steps[app.cur];
+  costWrap.innerHTML=renderTable(st.m,"m",st);
+  splitWrap.innerHTML=renderTable(st.s,"s",st);
+  explanText.innerHTML=st.note
+    ?`${esc(st.explanation)}<span class="explain-note">${esc(st.note)}</span>`
+    :esc(st.explanation);
+  renderPseudo(st.codeLine);
+  renderHistory();
+
+  stepCounter.textContent=`${app.cur+1} / ${app.steps.length}`;
+  subproblems.textContent=st.metrics.sp;
+  splitChecks.textContent=st.metrics.sc;
+  dpWrites.textContent=st.metrics.dw;
+  curBest.textContent=st.metrics.curBest==null||st.metrics.curBest===Infinity?"—":st.metrics.curBest;
+
+  const {i,j,k,L}=st.ptr;
+  currentRange.textContent=i&&j?`m[${i}][${j}]`:"—";
+  currentSplit.textContent=k?`k = ${k}`:"—";
+  currentLength.textContent=L?`L = ${L}`:"—";
+  pointerI.textContent=i??"—"; pointerJ.textContent=j??"—"; pointerK.textContent=k??"—";
+  parentText.textContent=st.paren;
+
+  updateProgress(); updateButtons(); updateSummary(); renderGrowth();
+  flash(explanText);
+  softRefresh(costWrap, splitWrap, histList, pseudoBox);
+}
+
+// ── navigation ────────────────────────────────────────────────────────────────
+function goTo(idx){ app.cur=Math.max(0,Math.min(idx,app.steps.length-1)); renderStep(); }
+function next(){ if(app.cur<app.steps.length-1){app.cur++;renderStep();if(app.cur===app.steps.length-1)stop("done");}else stop("done"); }
+const delay=()=>Math.max(100,800/app.speed);
+
+function playLoop(){
+  if(app.status!=="playing")return;
+  next();
+  if(app.status==="playing") app.timer=setTimeout(playLoop,delay());
+}
+function start(){
+  if(!app.steps.length)return;
+  if(app.cur>=app.steps.length-1) app.cur=-1;
+  setStatus("playing"); updateButtons();
+  clearTimeout(app.timer);
+  app.timer=setTimeout(playLoop,delay());
+}
+function stop(ns="paused"){
+  clearTimeout(app.timer); app.timer=null;
+  setStatus(ns); updateButtons();
+}
+
+// ── build ─────────────────────────────────────────────────────────────────────
+function build(){
+  try{
+    stop("idle");
+    const dims=parseDims(dimsInput.value);
+    app.mode=modeSelect.value;
+    modeBadge.textContent=MODES[app.mode].badge;
+    modeNote.textContent=MODES[app.mode].note;
+    app.steps=generateSteps(dims,app.mode);
+    app.cur=-1;
+    setStatus("ready");
+    explanText.innerHTML=`Steps ready. Press <strong>Step →</strong> or <strong>Play</strong>.`;
+    costWrap.innerHTML=""; splitWrap.innerHTML="";
+    stepCounter.textContent=`0 / ${app.steps.length}`;
+    renderPseudo(-1); renderHistory(); updateProgress(); updateButtons(); updateSummary(); renderGrowth();
+  }catch(e){ alert(e.message); }
+}
+
+function reset(){
+  clearTimeout(app.timer); app.timer=null;
+  app.steps=[]; app.cur=-1; app.n=0; app.summary=null;
+  setStatus("idle"); renderStep(); updateButtons();
+}
+
+// ── events ────────────────────────────────────────────────────────────────────
+buildBtn.addEventListener("click",build);
+stepBtn.addEventListener("click",()=>{
+  if(!app.steps.length)return;
+  if(app.status==="playing")stop("paused");
+  setStatus("ready"); next();
+  if(app.cur<app.steps.length-1)setStatus("ready");
+  updateButtons();
+});
+playBtn.addEventListener("click",start);
+pauseBtn.addEventListener("click",()=>stop("paused"));
+resetBtn.addEventListener("click",reset);
+speedSlider.addEventListener("input",()=>{
+  app.speed=+speedSlider.value;
+  speedValueEl.textContent=app.speed.toFixed(2)+"×";
+  if(app.status==="playing"){ clearTimeout(app.timer); app.timer=setTimeout(playLoop,delay()); }
+});
+modeSelect.addEventListener("change",()=>{
+  app.mode=modeSelect.value;
+  modeBadge.textContent=MODES[app.mode].badge;
+  modeNote.textContent=MODES[app.mode].note;
+  if(app.steps.length)build();
+});
+growthSlider.addEventListener("input",()=>{
+  app.growthMax=+growthSlider.value;
+  growthLabel.textContent=`up to ${app.growthMax}`;
+  renderGrowth();
+});
+document.querySelectorAll(".chip").forEach(c=>{
+  c.addEventListener("click",()=>{ dimsInput.value=c.dataset.preset; });
+});
+
+// themes: cycle between dark-cool (default), dark-warm, light
+const THEME_CSS = [
+  ``,
+  `:root{--bg:#110e17;--surface:#1d1627;--surface2:#2a1f3d;--accent:#b794f4;--accent2:#63b3ed;--border:rgba(255,255,255,0.07)}`,
+  `:root{--bg:#f5f6fa;--surface:#ffffff;--surface2:#f0f1f5;--text:#1a1d2e;--muted:#6b7280;--soft:#9ca3af;--border:rgba(0,0,0,0.08);--accent:#2563eb;--accent2:#7c3aed;--cell-base:rgba(34,197,94,0.15);--cell-active:rgba(37,99,235,0.18);--cell-candidate:rgba(245,158,11,0.2);--cell-dependency:rgba(124,58,237,0.15);--cell-finalized:rgba(37,99,235,0.28)}`
+];
+let themeTag=null;
+$("themeBtn").addEventListener("click",()=>{
+  app.themeIdx=(app.themeIdx+1)%THEME_CSS.length;
+  if(!themeTag){themeTag=document.createElement("style");document.head.appendChild(themeTag);}
+  themeTag.textContent=THEME_CSS[app.themeIdx];
+  if(app.cur>=0&&app.steps.length)renderStep();
+  else renderGrowth();
+});
+
+$("exportBtn").addEventListener("click",()=>{
+  if(!app.steps.length||!app.summary){alert("Build steps first.");return;}
+  const last=app.steps[app.steps.length-1];
+  const txt=[
+    "Matrix Chain Multiplication Summary",
+    "===================================",
+    `Dimensions: ${app.dims.join(", ")}`,
+    `Matrices: ${app.n}`,
+    `Mode: ${app.mode}`,
+    `Current mode cost: ${app.summary.cur.cost}`,
+    `Optimal DP cost: ${app.summary.exh.cost}`,
+    `Left-to-right cost: ${app.summary.ltr}`,
+    `Saved vs left-to-right: ${app.summary.saved}`,
+    `Optimal parenthesization: ${app.summary.exh.paren}`,
+    `Total steps generated: ${app.steps.length}`,
+    `Split checks: ${app.summary.cur.sc}`,
+    `Brute force count: ${app.summary.exh.catalan}`,
+  ].join("\n");
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([txt],{type:"text/plain"}));
+  a.download="mcm-summary.txt"; a.click();
+});
+
+notesToggle.addEventListener("click",()=>{
+  const open=notesBody.style.display!=="none";
+  notesBody.style.display=open?"none":"";
+  notesToggle.classList.toggle("open",!open);
+});
+
+document.addEventListener("keydown",e=>{
+  const tag=document.activeElement?.tagName?.toLowerCase();
+  if(tag==="input"||tag==="select"||tag==="textarea")return;
+  if(e.code==="Space"){e.preventDefault();app.status==="playing"?stop("paused"):start();}
+  if(e.key==="ArrowRight"){e.preventDefault();stepBtn.click();}
+  if(e.key.toLowerCase()==="r")reset();
+});
+
+// ── init ──────────────────────────────────────────────────────────────────────
+renderPseudo(-1);
+growthLabel.textContent=`up to ${app.growthMax}`;
+renderGrowth();
+reset();
+</script>
 </body>
 </html>
